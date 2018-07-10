@@ -62,8 +62,9 @@ const (
 // QueryResponse is the response sent back by Facebook when setting up things
 // like greetings or call-to-actions
 type QueryResponse struct {
-	Error  *QueryError `json:"error,omitempty"`
-	Result string      `json:"result,omitempty"`
+	Error       *QueryError `json:"error,omitempty"`
+	RecipientID string      `json:"recipient_id"`
+	MessageID   string      `json:"message_id"`
 }
 
 // QueryError is representing an error sent back by Facebook
@@ -80,19 +81,16 @@ func (e QueryError) Error() string {
 	return e.Message
 }
 
-func checkFacebookError(r io.Reader) error {
-	var err error
-
+func getFacebookQueryResponse(r io.Reader) (QueryResponse, error) {
 	qr := QueryResponse{}
-	err = json.NewDecoder(r).Decode(&qr)
+	err := json.NewDecoder(r).Decode(&qr)
 	if err != nil {
-		return xerrors.Errorf("json unmarshal error: %w", err)
+		return qr, xerrors.Errorf("json unmarshal error: %w", err)
 	}
 	if qr.Error != nil {
-		return xerrors.Errorf("facebook error: %w", qr.Error)
+		return qr, xerrors.Errorf("facebook error: %w", qr.Error)
 	}
-
-	return nil
+	return qr, nil
 }
 
 // Response is used for responding to events with messages.
@@ -107,14 +105,14 @@ func (r *Response) SetToken(token string) {
 }
 
 // Text sends a textual message.
-func (r *Response) Text(message string, messagingType MessagingType, tags ...string) error {
+func (r *Response) Text(message string, messagingType MessagingType, tags ...string) (QueryResponse, error) {
 	return r.TextWithReplies(message, nil, messagingType, tags...)
 }
 
 // TextWithReplies sends a textual message with some replies
 // messagingType should be one of the following: "RESPONSE","UPDATE","MESSAGE_TAG","NON_PROMOTIONAL_SUBSCRIPTION"
 // only supply tags when messagingType == "MESSAGE_TAG" (see https://developers.facebook.com/docs/messenger-platform/send-messages#messaging_types for more)
-func (r *Response) TextWithReplies(message string, replies []QuickReply, messagingType MessagingType, tags ...string) error {
+func (r *Response) TextWithReplies(message string, replies []QuickReply, messagingType MessagingType, tags ...string) (QueryResponse, error) {
 	var tag string
 	if len(tags) > 0 {
 		tag = tags[0]
@@ -134,7 +132,7 @@ func (r *Response) TextWithReplies(message string, replies []QuickReply, messagi
 }
 
 // AttachmentWithReplies sends a attachment message with some replies
-func (r *Response) AttachmentWithReplies(attachment *StructuredMessageAttachment, replies []QuickReply, messagingType MessagingType, tags ...string) error {
+func (r *Response) AttachmentWithReplies(attachment *StructuredMessageAttachment, replies []QuickReply, messagingType MessagingType, tags ...string) (QueryResponse, error) {
 	var tag string
 	if len(tags) > 0 {
 		tag = tags[0]
@@ -153,18 +151,20 @@ func (r *Response) AttachmentWithReplies(attachment *StructuredMessageAttachment
 }
 
 // Image sends an image.
-func (r *Response) Image(im image.Image) error {
+func (r *Response) Image(im image.Image) (QueryResponse, error) {
+	var qr QueryResponse
+
 	imageBytes := new(bytes.Buffer)
 	err := jpeg.Encode(imageBytes, im, nil)
 	if err != nil {
-		return err
+		return qr, err
 	}
 
 	return r.AttachmentData(ImageAttachment, "meme.jpg", imageBytes)
 }
 
 // Attachment sends an image, sound, video or a regular file to a chat.
-func (r *Response) Attachment(dataType AttachmentType, url string, messagingType MessagingType, tags ...string) error {
+func (r *Response) Attachment(dataType AttachmentType, url string, messagingType MessagingType, tags ...string) (QueryResponse, error) {
 	var tag string
 	if len(tags) > 0 {
 		tag = tags[0]
@@ -205,11 +205,12 @@ func createFormFile(filename string, w *multipart.Writer, contentType string) (i
 }
 
 // AttachmentData sends an image, sound, video or a regular file to a chat via an io.Reader.
-func (r *Response) AttachmentData(dataType AttachmentType, filename string, filedata io.Reader) error {
+func (r *Response) AttachmentData(dataType AttachmentType, filename string, filedata io.Reader) (QueryResponse, error) {
+	var qr QueryResponse
 
 	filedataBytes, err := ioutil.ReadAll(filedata)
 	if err != nil {
-		return err
+		return qr, err
 	}
 	contentType := http.DetectContentType(filedataBytes[:512])
 	fmt.Println("Content-type detected:", contentType)
@@ -218,12 +219,12 @@ func (r *Response) AttachmentData(dataType AttachmentType, filename string, file
 	multipartWriter := multipart.NewWriter(&body)
 	data, err := createFormFile(filename, multipartWriter, contentType)
 	if err != nil {
-		return err
+		return qr, err
 	}
 
 	_, err = bytes.NewBuffer(filedataBytes).WriteTo(data)
 	if err != nil {
-		return err
+		return qr, err
 	}
 
 	multipartWriter.WriteField("recipient", fmt.Sprintf(`{"id":"%v"}`, r.to.ID))
@@ -231,7 +232,7 @@ func (r *Response) AttachmentData(dataType AttachmentType, filename string, file
 
 	req, err := http.NewRequest("POST", SendMessageURL, &body)
 	if err != nil {
-		return err
+		return qr, err
 	}
 
 	req.URL.RawQuery = "access_token=" + r.token
@@ -241,15 +242,15 @@ func (r *Response) AttachmentData(dataType AttachmentType, filename string, file
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return err
+		return qr, err
 	}
 	defer resp.Body.Close()
 
-	return checkFacebookError(resp.Body)
+	return getFacebookQueryResponse(resp.Body)
 }
 
 // ButtonTemplate sends a message with the main contents being button elements
-func (r *Response) ButtonTemplate(text string, buttons *[]StructuredMessageButton, messagingType MessagingType, tags ...string) error {
+func (r *Response) ButtonTemplate(text string, buttons *[]StructuredMessageButton, messagingType MessagingType, tags ...string) (QueryResponse, error) {
 	var tag string
 	if len(tags) > 0 {
 		tag = tags[0]
@@ -276,7 +277,7 @@ func (r *Response) ButtonTemplate(text string, buttons *[]StructuredMessageButto
 }
 
 // GenericTemplate is a message which allows for structural elements to be sent
-func (r *Response) GenericTemplate(elements *[]StructuredMessageElement, messagingType MessagingType, tags ...string) error {
+func (r *Response) GenericTemplate(elements *[]StructuredMessageElement, messagingType MessagingType, tags ...string) (QueryResponse, error) {
 	var tag string
 	if len(tags) > 0 {
 		tag = tags[0]
@@ -301,7 +302,7 @@ func (r *Response) GenericTemplate(elements *[]StructuredMessageElement, messagi
 }
 
 // ListTemplate sends a list of elements
-func (r *Response) ListTemplate(elements *[]StructuredMessageElement, messagingType MessagingType, tags ...string) error {
+func (r *Response) ListTemplate(elements *[]StructuredMessageElement, messagingType MessagingType, tags ...string) (QueryResponse, error) {
 	var tag string
 	if len(tags) > 0 {
 		tag = tags[0]
@@ -327,7 +328,7 @@ func (r *Response) ListTemplate(elements *[]StructuredMessageElement, messagingT
 }
 
 // SenderAction sends a info about sender action
-func (r *Response) SenderAction(action string) error {
+func (r *Response) SenderAction(action string) (QueryResponse, error) {
 	m := SendSenderAction{
 		Recipient:    r.to,
 		SenderAction: action,
@@ -336,15 +337,16 @@ func (r *Response) SenderAction(action string) error {
 }
 
 // DispatchMessage posts the message to messenger, return the error if there's any
-func (r *Response) DispatchMessage(m interface{}) error {
+func (r *Response) DispatchMessage(m interface{}) (QueryResponse, error) {
+	var res QueryResponse
 	data, err := json.Marshal(m)
 	if err != nil {
-		return err
+		return res, err
 	}
 
 	req, err := http.NewRequest("POST", SendMessageURL, bytes.NewBuffer(data))
 	if err != nil {
-		return err
+		return res, err
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -352,13 +354,12 @@ func (r *Response) DispatchMessage(m interface{}) error {
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return err
+		return res, err
 	}
+
 	defer resp.Body.Close()
-	if resp.StatusCode == 200 {
-		return nil
-	}
-	return checkFacebookError(resp.Body)
+
+	return getFacebookQueryResponse(resp.Body)
 }
 
 // PassThreadToInbox Uses Messenger Handover Protocol for live inbox
