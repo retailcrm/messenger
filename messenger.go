@@ -18,6 +18,10 @@ const (
 	// ProfileURL is the API endpoint used for retrieving profiles.
 	// Used in the form: https://graph.facebook.com/v2.6/<USER_ID>?fields=<PROFILE_FIELDS>&access_token=<PAGE_ACCESS_TOKEN>
 	ProfileURL = "https://graph.facebook.com/v2.6/"
+
+	// ProfileFields is a list of JSON field names which will be populated by the profile query.
+	ProfileFields = "first_name,last_name,profile_pic"
+
 	// SendSettingsURL is API endpoint for saving settings.
 	SendSettingsURL = "https://graph.facebook.com/v2.6/me/thread_settings"
 
@@ -170,7 +174,6 @@ func (m *Messenger) ProfileByID(id int64, profileFields []string) (Profile, erro
 	}
 
 	fields := strings.Join(profileFields, ",")
-
 	req.URL.RawQuery = "fields=" + fields + "&access_token=" + m.token
 
 	client := &http.Client{}
