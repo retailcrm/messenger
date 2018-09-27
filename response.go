@@ -351,15 +351,55 @@ type StructuredMessagePayload struct {
 	Elements     *[]StructuredMessageElement `json:"elements,omitempty"`
 	Buttons      *[]StructuredMessageButton  `json:"buttons,omitempty"`
 	Url          string                      `json:"url,omitempty"`
+	ReceiptMessagePayload
+}
+
+type ReceiptMessagePayload struct {
+	RecipientName string       `json:"recipient_name,omitempty"`
+	OrderNumber   string       `json:"order_number,omitempty"`
+	Currency      string       `json:"currency,omitempty"`
+	PaymentMethod string       `json:"payment_method,omitempty"`
+	Timestamp     int64        `json:"timestamp,omitempty"`
+	Address       *Address     `json:"address,omitempty"`
+	Summary       *Summary     `json:"summary,omitempty"`
+	Adjustments   []Adjustment `json:"adjustments,omitempty"`
+}
+
+type Address struct {
+	Street1    string `json:"street_1,omitempty"`
+	Street2    string `json:"street_2,omitempty"`
+	City       string `json:"city,omitempty"`
+	PostalCode string `json:"postal_code,omitempty"`
+	State      string `json:"state,omitempty"`
+	Country    string `json:"country,omitempty"`
+}
+
+type Summary struct {
+	Subtotal     float32 `json:"subtotal,omitempty"`
+	ShippingCost float32 `json:"shipping_cost,omitempty"`
+	TotalTax     float32 `json:"total_tax,omitempty"`
+	TotalCost    float32 `json:"total_cost,omitempty"`
+}
+
+type Adjustment struct {
+	Name   string  `json:"name,omitempty"`
+	Amount float32 `json:"amount,omitempty"`
 }
 
 // StructuredMessageElement is a response containing structural elements
 type StructuredMessageElement struct {
-	Title    string                    `json:"title"`
-	ImageURL string                    `json:"image_url"`
-	ItemURL  string                    `json:"item_url"`
-	Subtitle string                    `json:"subtitle"`
-	Buttons  []StructuredMessageButton `json:"buttons"`
+	Title    string                    `json:"title,omitempty"`
+	ImageURL string                    `json:"image_url,omitempty"`
+	ItemURL  string                    `json:"item_url,omitempty"`
+	Subtitle string                    `json:"subtitle,omitempty"`
+	Buttons  []StructuredMessageButton `json:"buttons,omitempty"`
+	ReceiptMessageElement
+}
+
+type ReceiptMessageElement struct {
+	Quantity float32 `json:"quantity,omitempty"`
+	Price    float32 `json:"price,omitempty"`
+	Currency string  `json:"currency,omitempty"`
 }
 
 // StructuredMessageButton is a response containing buttons
