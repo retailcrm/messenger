@@ -16,6 +16,8 @@ type Message struct {
 	// Message is mine
 	IsEcho bool `json:"is_echo,omitempty"`
 	// Mid is the ID of the message.
+	Metadata string `json:"metadata"`
+	// Mid is the ID of the message.
 	Mid string `json:"mid"`
 	// Seq is order the message was sent in relation to other messages.
 	Seq int `json:"seq"`

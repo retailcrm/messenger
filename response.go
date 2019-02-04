@@ -120,14 +120,14 @@ func (r *Response) SetToken(token string) {
 }
 
 // Text sends a textual message.
-func (r *Response) Text(message string, messagingType MessagingType, tags ...string) (QueryResponse, error) {
-	return r.TextWithReplies(message, nil, messagingType, tags...)
+func (r *Response) Text(message string, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
+	return r.TextWithReplies(message, nil, messagingType, metadata, tags...)
 }
 
 // TextWithReplies sends a textual message with some replies
 // messagingType should be one of the following: "RESPONSE","UPDATE","MESSAGE_TAG","NON_PROMOTIONAL_SUBSCRIPTION"
 // only supply tags when messagingType == "MESSAGE_TAG" (see https://developers.facebook.com/docs/messenger-platform/send-messages#messaging_types for more)
-func (r *Response) TextWithReplies(message string, replies []QuickReply, messagingType MessagingType, tags ...string) (QueryResponse, error) {
+func (r *Response) TextWithReplies(message string, replies []QuickReply, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
 	var tag string
 	if len(tags) > 0 {
 		tag = tags[0]
@@ -140,6 +140,7 @@ func (r *Response) TextWithReplies(message string, replies []QuickReply, messagi
 			Text:         message,
 			Attachment:   nil,
 			QuickReplies: replies,
+			Metadata:     metadata,
 		},
 		Tag: tag,
 	}
@@ -147,7 +148,7 @@ func (r *Response) TextWithReplies(message string, replies []QuickReply, messagi
 }
 
 // AttachmentWithReplies sends a attachment message with some replies
-func (r *Response) AttachmentWithReplies(attachment *StructuredMessageAttachment, replies []QuickReply, messagingType MessagingType, tags ...string) (QueryResponse, error) {
+func (r *Response) AttachmentWithReplies(attachment *StructuredMessageAttachment, replies []QuickReply, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
 	var tag string
 	if len(tags) > 0 {
 		tag = tags[0]
@@ -159,6 +160,7 @@ func (r *Response) AttachmentWithReplies(attachment *StructuredMessageAttachment
 		Message: MessageData{
 			Attachment:   attachment,
 			QuickReplies: replies,
+			Metadata:     metadata,
 		},
 		Tag: tag,
 	}
@@ -179,7 +181,7 @@ func (r *Response) Image(im image.Image) (QueryResponse, error) {
 }
 
 // Attachment sends an image, sound, video or a regular file to a chat.
-func (r *Response) Attachment(dataType AttachmentType, url string, messagingType MessagingType, tags ...string) (QueryResponse, error) {
+func (r *Response) Attachment(dataType AttachmentType, url string, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
 	var tag string
 	if len(tags) > 0 {
 		tag = tags[0]
@@ -189,6 +191,7 @@ func (r *Response) Attachment(dataType AttachmentType, url string, messagingType
 		MessagingType: messagingType,
 		Recipient:     r.to,
 		Message: StructuredMessageData{
+			Metadata: metadata,
 			Attachment: StructuredMessageAttachment{
 				Type: dataType,
 				Payload: StructuredMessagePayload{
@@ -265,7 +268,7 @@ func (r *Response) AttachmentData(dataType AttachmentType, filename string, file
 }
 
 // ButtonTemplate sends a message with the main contents being button elements
-func (r *Response) ButtonTemplate(text string, buttons *[]StructuredMessageButton, messagingType MessagingType, tags ...string) (QueryResponse, error) {
+func (r *Response) ButtonTemplate(text string, buttons *[]StructuredMessageButton, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
 	var tag string
 	if len(tags) > 0 {
 		tag = tags[0]
@@ -275,6 +278,7 @@ func (r *Response) ButtonTemplate(text string, buttons *[]StructuredMessageButto
 		MessagingType: messagingType,
 		Recipient:     r.to,
 		Message: StructuredMessageData{
+			Metadata: metadata,
 			Attachment: StructuredMessageAttachment{
 				Type: "template",
 				Payload: StructuredMessagePayload{
@@ -292,7 +296,7 @@ func (r *Response) ButtonTemplate(text string, buttons *[]StructuredMessageButto
 }
 
 // GenericTemplate is a message which allows for structural elements to be sent
-func (r *Response) GenericTemplate(elements *[]StructuredMessageElement, messagingType MessagingType, tags ...string) (QueryResponse, error) {
+func (r *Response) GenericTemplate(elements *[]StructuredMessageElement, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
 	var tag string
 	if len(tags) > 0 {
 		tag = tags[0]
@@ -302,6 +306,7 @@ func (r *Response) GenericTemplate(elements *[]StructuredMessageElement, messagi
 		MessagingType: messagingType,
 		Recipient:     r.to,
 		Message: StructuredMessageData{
+			Metadata: metadata,
 			Attachment: StructuredMessageAttachment{
 				Type: "template",
 				Payload: StructuredMessagePayload{
@@ -421,6 +426,7 @@ type MessageData struct {
 	Text         string                       `json:"text,omitempty"`
 	Attachment   *StructuredMessageAttachment `json:"attachment,omitempty"`
 	QuickReplies []QuickReply                 `json:"quick_replies,omitempty"`
+	Metadata     string                       `json:"metadata,omitempty"`
 }
 
 // SendStructuredMessage is a structured message template.
@@ -434,6 +440,7 @@ type SendStructuredMessage struct {
 // StructuredMessageData is an attachment sent with a structured message.
 type StructuredMessageData struct {
 	Attachment StructuredMessageAttachment `json:"attachment"`
+	Metadata   string                      `json:"metadata,omitempty"`
 }
 
 // StructuredMessageAttachment is the attachment of a structured message.
