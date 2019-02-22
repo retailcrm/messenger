@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/paked/messenger"
+	"github.com/gwinn/messenger"
 )
 
 const (
@@ -85,7 +85,7 @@ func main() {
 			text = "You've been logged out of your account."
 		}
 
-		if err := r.Text(text, messenger.ResponseType); err != nil {
+		if _, err := r.Text(text, messenger.ResponseType, ""); err != nil {
 			log.Println("Failed to send account linking feedback")
 		}
 	})
@@ -117,7 +117,8 @@ func loginButton(r *messenger.Response) error {
 			URL:  "https://" + path.Join(*publicHost, loginPath),
 		},
 	}
-	return r.ButtonTemplate("Link your account.", buttons, messenger.ResponseType)
+	_, err := r.ButtonTemplate("Link your account.", buttons, messenger.ResponseType, "")
+	return err
 }
 
 // logoutButton show to the user a button that can be used to start
@@ -128,12 +129,14 @@ func logoutButton(r *messenger.Response) error {
 			Type: "account_unlink",
 		},
 	}
-	return r.ButtonTemplate("Unlink your account.", buttons, messenger.ResponseType)
+	_, err := r.ButtonTemplate("Unlink your account.", buttons, messenger.ResponseType, "")
+	return err
 }
 
 // greeting salutes the user.
 func greeting(p messenger.Profile, r *messenger.Response) error {
-	return r.Text(fmt.Sprintf("Hello, %v!", p.FirstName), messenger.ResponseType)
+	_, err := r.Text(fmt.Sprintf("Hello, %v!", p.FirstName), messenger.ResponseType, "")
+	return err
 }
 
 // help displays possibles actions to the user.
@@ -154,7 +157,8 @@ func help(p messenger.Profile, r *messenger.Response) error {
 		},
 	}
 
-	return r.TextWithReplies(text, replies, messenger.ResponseType)
+	_, err := r.TextWithReplies(text, replies, messenger.ResponseType, "")
+	return err
 }
 
 // loginForm is the endpoint responsible to displays a login
