@@ -8,7 +8,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/paked/messenger"
+	"github.com/gwinn/messenger"
 )
 
 var (
@@ -48,7 +48,7 @@ func main() {
 			fmt.Println("Something went wrong!", err)
 		}
 
-		r.Text(fmt.Sprintf("Hello, %v!", p.FirstName), messenger.ResponseType)
+		r.Text(fmt.Sprintf("Hello, %v!", p.FirstName), messenger.ResponseType, "")
 	})
 
 	// Setup a handler to be triggered when a message is delivered
