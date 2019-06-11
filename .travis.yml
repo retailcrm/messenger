@@ -3,7 +3,7 @@ go:
   - 1.10.x
   - master
 
-go_import_path: github.com/paked/messenger
+go_import_path: github.com/gwinn/messenger
 
 install: go get -t ./...
 script:
