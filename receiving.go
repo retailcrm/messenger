@@ -116,10 +116,19 @@ type Payload struct {
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
+<<<<<<< HEAD
 	Title string `json:"title,omitempty"`
 =======
 >>>>>>> fcf031d (Fix conflict with receiving.go while cherry-picking)
+<<<<<<< HEAD
 >>>>>>> 92cbea4 (Fix conflict with receiving.go while cherry-picking)
+=======
+=======
+	Title string `json:"title,omitempty"`
+>>>>>>> 46e5525 (Add title to payload)
+=======
+>>>>>>> 0a2552c (Merge pull request #1 from Neur0toxine/master)
+>>>>>>> 432a6ee (Merge pull request #1 from Neur0toxine/master)
 	// Coordinates is Lat/Long pair of location pin
 	Coordinates *Coordinates `json:"coordinates,omitempty"`
 }
