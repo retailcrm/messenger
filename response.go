@@ -59,6 +59,10 @@ const (
 	HorizontalImageAspectRatio ImageAspectRatio = "horizontal"
 	// ImageAspectRatio is square.
 	SquareImageAspectRatio ImageAspectRatio = "square"
+
+	SenderActionMarkSeen  SenderAction = "mark_seen"
+	SenderActionTypingOn  SenderAction = "typing_on"
+	SenderActionTypingOff SenderAction = "typing_off"
 )
 
 // QueryResponse is the response sent back by Facebook when setting up things
