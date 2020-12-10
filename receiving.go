@@ -113,6 +113,7 @@ type QuickReply struct {
 // Payload is the information on where an attachment is.
 type Payload struct {
 	URL string `json:"url,omitempty"`
+	Title string `json:"title,omitempty"`
 	// Coordinates is Lat/Long pair of location pin
 	Coordinates *Coordinates `json:"coordinates,omitempty"`
 }
