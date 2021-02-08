@@ -113,39 +113,7 @@ type QuickReply struct {
 // Payload is the information on where an attachment is.
 type Payload struct {
 	URL string `json:"url,omitempty"`
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 	Title string `json:"title,omitempty"`
-=======
->>>>>>> fcf031d (Fix conflict with receiving.go while cherry-picking)
-<<<<<<< HEAD
->>>>>>> 92cbea4 (Fix conflict with receiving.go while cherry-picking)
-=======
-=======
-	Title string `json:"title,omitempty"`
->>>>>>> 46e5525 (Add title to payload)
-=======
->>>>>>> 0a2552c (Merge pull request #1 from Neur0toxine/master)
-<<<<<<< HEAD
->>>>>>> 432a6ee (Merge pull request #1 from Neur0toxine/master)
-=======
-=======
-	Title string `json:"title,omitempty"`
->>>>>>> 46e5525 (Add title to payload)
-=======
-	Title string `json:"title,omitempty"`
->>>>>>> 1d59bfd (add title to payload)
-<<<<<<< HEAD
->>>>>>> dcfe8d3 (add title to payload)
-=======
-=======
-	Title string `json:"title,omitempty"`
->>>>>>> 46e5525 (Add title to payload)
->>>>>>> fa15e71 (Add title to payload)
 	// Coordinates is Lat/Long pair of location pin
 	Coordinates *Coordinates `json:"coordinates,omitempty"`
 }
