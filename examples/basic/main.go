@@ -8,7 +8,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/gwinn/messenger"
+	"github.com/retailcrm/messenger"
 )
 
 var (

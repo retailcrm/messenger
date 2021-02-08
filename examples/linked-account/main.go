@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gwinn/messenger"
+	"github.com/retailcrm/messenger"
 )
 
 const (
