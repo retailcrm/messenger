@@ -8,7 +8,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/paked/messenger"
+	"github.com/retailcrm/messenger"
 )
 
 var (
@@ -57,7 +57,7 @@ func main() {
 			fmt.Println("Something went wrong!", err)
 		}
 
-		r.Text(fmt.Sprintf("Hello, %v!", p.FirstName), messenger.ResponseType)
+		r.Text(fmt.Sprintf("Hello, %v!", p.FirstName), messenger.ResponseType, "")
 	})
 
 	addr := fmt.Sprintf("%s:%d", *host, *port)

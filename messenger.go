@@ -18,6 +18,10 @@ const (
 	// ProfileURL is the API endpoint used for retrieving profiles.
 	// Used in the form: https://graph.facebook.com/v2.6/<USER_ID>?fields=<PROFILE_FIELDS>&access_token=<PAGE_ACCESS_TOKEN>
 	ProfileURL = "https://graph.facebook.com/v2.6/"
+
+	// ProfileFields is a list of JSON field names which will be populated by the profile query.
+	ProfileFields = "first_name,last_name,profile_pic"
+
 	// SendSettingsURL is API endpoint for saving settings.
 	SendSettingsURL = "https://graph.facebook.com/v2.6/me/thread_settings"
 
@@ -170,7 +174,6 @@ func (m *Messenger) ProfileByID(id int64, profileFields []string) (Profile, erro
 	}
 
 	fields := strings.Join(profileFields, ",")
-
 	req.URL.RawQuery = "fields=" + fields + "&access_token=" + m.token
 
 	client := &http.Client{}
@@ -202,7 +205,9 @@ func (m *Messenger) ProfileByID(id int64, profileFields []string) (Profile, erro
 }
 
 // GreetingSetting sends settings for greeting
-func (m *Messenger) GreetingSetting(text string) error {
+func (m *Messenger) GreetingSetting(text string) (QueryResponse, error) {
+	var qr QueryResponse
+
 	d := GreetingSetting{
 		SettingType: "greeting",
 		Greeting: GreetingInfo{
@@ -212,12 +217,12 @@ func (m *Messenger) GreetingSetting(text string) error {
 
 	data, err := json.Marshal(d)
 	if err != nil {
-		return err
+		return qr, err
 	}
 
 	req, err := http.NewRequest("POST", SendSettingsURL, bytes.NewBuffer(data))
 	if err != nil {
-		return err
+		return qr, err
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -227,15 +232,17 @@ func (m *Messenger) GreetingSetting(text string) error {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return err
+		return qr, err
 	}
 	defer resp.Body.Close()
 
-	return checkFacebookError(resp.Body)
+	return getFacebookQueryResponse(resp.Body)
 }
 
 // CallToActionsSetting sends settings for Get Started or Persistent Menu
-func (m *Messenger) CallToActionsSetting(state string, actions []CallToActionsItem) error {
+func (m *Messenger) CallToActionsSetting(state string, actions []CallToActionsItem) (QueryResponse, error) {
+	var qr QueryResponse
+
 	d := CallToActionsSetting{
 		SettingType:   "call_to_actions",
 		ThreadState:   state,
@@ -244,12 +251,12 @@ func (m *Messenger) CallToActionsSetting(state string, actions []CallToActionsIt
 
 	data, err := json.Marshal(d)
 	if err != nil {
-		return err
+		return qr, err
 	}
 
 	req, err := http.NewRequest("POST", SendSettingsURL, bytes.NewBuffer(data))
 	if err != nil {
-		return err
+		return qr, err
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -259,11 +266,11 @@ func (m *Messenger) CallToActionsSetting(state string, actions []CallToActionsIt
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return err
+		return qr, err
 	}
 	defer resp.Body.Close()
 
-	return checkFacebookError(resp.Body)
+	return getFacebookQueryResponse(resp.Body)
 }
 
 // handle is the internal HTTP handler for the webhooks.
@@ -426,37 +433,37 @@ func (m *Messenger) Response(to int64) *Response {
 }
 
 // Send will send a textual message to a user. This user must have previously initiated a conversation with the bot.
-func (m *Messenger) Send(to Recipient, message string, messagingType MessagingType, tags ...string) error {
-	return m.SendWithReplies(to, message, nil, messagingType, tags...)
+func (m *Messenger) Send(to Recipient, message string, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
+	return m.SendWithReplies(to, message, nil, messagingType, metadata, tags...)
 }
 
 // SendGeneralMessage will send the GenericTemplate message
-func (m *Messenger) SendGeneralMessage(to Recipient, elements *[]StructuredMessageElement, messagingType MessagingType, tags ...string) error {
+func (m *Messenger) SendGeneralMessage(to Recipient, elements *[]StructuredMessageElement, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
 	r := &Response{
 		token: m.token,
 		to:    to,
 	}
-	return r.GenericTemplate(elements, messagingType, tags...)
+	return r.GenericTemplate(elements, messagingType, metadata, tags...)
 }
 
 // SendWithReplies sends a textual message to a user, but gives them the option of numerous quick response options.
-func (m *Messenger) SendWithReplies(to Recipient, message string, replies []QuickReply, messagingType MessagingType, tags ...string) error {
+func (m *Messenger) SendWithReplies(to Recipient, message string, replies []QuickReply, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
 	response := &Response{
 		token: m.token,
 		to:    to,
 	}
 
-	return response.TextWithReplies(message, replies, messagingType, tags...)
+	return response.TextWithReplies(message, replies, messagingType, metadata, tags...)
 }
 
 // Attachment sends an image, sound, video or a regular file to a given recipient.
-func (m *Messenger) Attachment(to Recipient, dataType AttachmentType, url string, messagingType MessagingType, tags ...string) error {
+func (m *Messenger) Attachment(to Recipient, dataType AttachmentType, url string, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
 	response := &Response{
 		token: m.token,
 		to:    to,
 	}
 
-	return response.Attachment(dataType, url, messagingType, tags...)
+	return response.Attachment(dataType, url, messagingType, metadata, tags...)
 }
 
 // EnableChatExtension set the homepage url required for a chat extension.
