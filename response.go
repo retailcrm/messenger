@@ -508,7 +508,7 @@ type StructuredMessageElement struct {
 	ItemURL       string                     `json:"item_url,omitempty"`
 	Subtitle      string                     `json:"subtitle"`
 	DefaultAction *DefaultAction             `json:"default_action,omitempty"`
-	Buttons       *[]StructuredMessageButton `json:"buttons"`
+	Buttons       *[]StructuredMessageButton `json:"buttons,omitempty"`
 	ReceiptMessageElement
 }
 
