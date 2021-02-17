@@ -39,13 +39,13 @@ const (
 	// FileAttachment is file attachment type.
 	FileAttachment AttachmentType = "file"
 
-	// ResponseType is response messaging type
+	// ResponseType is response messaging type.
 	ResponseType MessagingType = "RESPONSE"
-	// UpdateType is update messaging type
+	// UpdateType is update messaging type.
 	UpdateType MessagingType = "UPDATE"
-	// MessageTagType is message_tag messaging type
+	// MessageTagType is message_tag messaging type.
 	MessageTagType MessagingType = "MESSAGE_TAG"
-	// NonPromotionalSubscriptionType is NON_PROMOTIONAL_SUBSCRIPTION messaging type
+	// NonPromotionalSubscriptionType is NON_PROMOTIONAL_SUBSCRIPTION messaging type.
 	NonPromotionalSubscriptionType MessagingType = "NON_PROMOTIONAL_SUBSCRIPTION"
 
 	// TopElementStyle is compact.
@@ -60,14 +60,14 @@ const (
 )
 
 // QueryResponse is the response sent back by Facebook when setting up things
-// like greetings or call-to-actions
+// like greetings or call-to-actions.
 type QueryResponse struct {
 	Error       *QueryError `json:"error,omitempty"`
 	RecipientID string      `json:"recipient_id"`
 	MessageID   string      `json:"message_id"`
 }
 
-// QueryError is representing an error sent back by Facebook
+// QueryError is representing an error sent back by Facebook.
 type QueryError struct {
 	Message      string `json:"message"`
 	Type         string `json:"type"`
@@ -76,7 +76,7 @@ type QueryError struct {
 	FBTraceID    string `json:"fbtrace_id"`
 }
 
-// QueryError implements error
+// QueryError implements error.
 func (e QueryError) Error() string {
 	return e.Message
 }
@@ -126,7 +126,8 @@ func (r *Response) Text(message string, messagingType MessagingType, metadata st
 
 // TextWithReplies sends a textual message with some replies
 // messagingType should be one of the following: "RESPONSE","UPDATE","MESSAGE_TAG","NON_PROMOTIONAL_SUBSCRIPTION"
-// only supply tags when messagingType == "MESSAGE_TAG" (see https://developers.facebook.com/docs/messenger-platform/send-messages#messaging_types for more)
+// only supply tags when messagingType == "MESSAGE_TAG"
+// (see https://developers.facebook.com/docs/messenger-platform/send-messages#messaging_types for more).
 func (r *Response) TextWithReplies(message string, replies []QuickReply, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
 	var tag string
 	if len(tags) > 0 {
@@ -147,7 +148,7 @@ func (r *Response) TextWithReplies(message string, replies []QuickReply, messagi
 	return r.DispatchMessage(&m)
 }
 
-// AttachmentWithReplies sends a attachment message with some replies
+// AttachmentWithReplies sends a attachment message with some replies.
 func (r *Response) AttachmentWithReplies(attachment *StructuredMessageAttachment, replies []QuickReply, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
 	var tag string
 	if len(tags) > 0 {
@@ -204,15 +205,15 @@ func (r *Response) Attachment(dataType AttachmentType, url string, messagingType
 	return r.DispatchMessage(&m)
 }
 
-// copied from multipart package
+// copied from multipart package.
 var quoteEscaper = strings.NewReplacer("\\", "\\\\", `"`, "\\\"")
 
-// copied from multipart package
+// copied from multipart package.
 func escapeQuotes(s string) string {
 	return quoteEscaper.Replace(s)
 }
 
-// copied from multipart package with slight changes due to fixed content-type there
+// copied from multipart package with slight changes due to fixed content-type there.
 func createFormFile(filename string, w *multipart.Writer, contentType string) (io.Writer, error) {
 	h := make(textproto.MIMEHeader)
 	h.Set("Content-Disposition",
@@ -267,7 +268,7 @@ func (r *Response) AttachmentData(dataType AttachmentType, filename string, file
 	return getFacebookQueryResponse(resp.Body)
 }
 
-// ButtonTemplate sends a message with the main contents being button elements
+// ButtonTemplate sends a message with the main contents being button elements.
 func (r *Response) ButtonTemplate(text string, buttons *[]StructuredMessageButton, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
 	var tag string
 	if len(tags) > 0 {
@@ -295,7 +296,7 @@ func (r *Response) ButtonTemplate(text string, buttons *[]StructuredMessageButto
 	return r.DispatchMessage(&m)
 }
 
-// GenericTemplate is a message which allows for structural elements to be sent
+// GenericTemplate is a message which allows for structural elements to be sent.
 func (r *Response) GenericTemplate(elements *[]StructuredMessageElement, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
 	var tag string
 	if len(tags) > 0 {
@@ -321,7 +322,7 @@ func (r *Response) GenericTemplate(elements *[]StructuredMessageElement, messagi
 	return r.DispatchMessage(&m)
 }
 
-// ListTemplate sends a list of elements
+// ListTemplate sends a list of elements.
 func (r *Response) ListTemplate(elements *[]StructuredMessageElement, messagingType MessagingType, tags ...string) (QueryResponse, error) {
 	var tag string
 	if len(tags) > 0 {
@@ -347,7 +348,7 @@ func (r *Response) ListTemplate(elements *[]StructuredMessageElement, messagingT
 	return r.DispatchMessage(&m)
 }
 
-// SenderAction sends a info about sender action
+// SenderAction sends a info about sender action.
 func (r *Response) SenderAction(action string) (QueryResponse, error) {
 	m := SendSenderAction{
 		Recipient:    r.to,
@@ -356,7 +357,7 @@ func (r *Response) SenderAction(action string) (QueryResponse, error) {
 	return r.DispatchMessage(&m)
 }
 
-// DispatchMessage posts the message to messenger, return the error if there's any
+// DispatchMessage posts the message to messenger, return the error if there's any.
 func (r *Response) DispatchMessage(m interface{}) (QueryResponse, error) {
 	var res QueryResponse
 	data, err := json.Marshal(m)
@@ -453,7 +454,7 @@ type StructuredMessageAttachment struct {
 	Payload StructuredMessagePayload `json:"payload"`
 }
 
-// StructuredMessagePayload is the actual payload of an attachment
+// StructuredMessagePayload is the actual payload of an attachment.
 type StructuredMessagePayload struct {
 	// TemplateType must be button, generic or receipt
 	TemplateType     string                      `json:"template_type,omitempty"`
@@ -500,14 +501,14 @@ type Adjustment struct {
 	Amount float32 `json:"amount,omitempty"`
 }
 
-// StructuredMessageElement is a response containing structural elements
+// StructuredMessageElement is a response containing structural elements.
 type StructuredMessageElement struct {
-	Title         string                    `json:"title"`
-	ImageURL      string                    `json:"image_url"`
-	ItemURL       string                    `json:"item_url,omitempty"`
-	Subtitle      string                    `json:"subtitle"`
-	DefaultAction *DefaultAction            `json:"default_action,omitempty"`
-	Buttons       []StructuredMessageButton `json:"buttons"`
+	Title         string                     `json:"title"`
+	ImageURL      string                     `json:"image_url"`
+	ItemURL       string                     `json:"item_url,omitempty"`
+	Subtitle      string                     `json:"subtitle"`
+	DefaultAction *DefaultAction             `json:"default_action,omitempty"`
+	Buttons       *[]StructuredMessageButton `json:"buttons"`
 	ReceiptMessageElement
 }
 
@@ -517,7 +518,7 @@ type ReceiptMessageElement struct {
 	Currency string  `json:"currency,omitempty"`
 }
 
-// DefaultAction is a response containing default action properties
+// DefaultAction is a response containing default action properties.
 type DefaultAction struct {
 	Type                string `json:"type"`
 	URL                 string `json:"url,omitempty"`
@@ -527,7 +528,7 @@ type DefaultAction struct {
 	WebviewShareButton  string `json:"webview_share_button,omitempty"`
 }
 
-// StructuredMessageButton is a response containing buttons
+// StructuredMessageButton is a response containing buttons.
 type StructuredMessageButton struct {
 	Type                string                 `json:"type"`
 	URL                 string                 `json:"url,omitempty"`
@@ -540,7 +541,7 @@ type StructuredMessageButton struct {
 	ShareContents       *StructuredMessageData `json:"share_contents,omitempty"`
 }
 
-// SendSenderAction is the information about sender action
+// SendSenderAction is the information about sender action.
 type SendSenderAction struct {
 	Recipient    Recipient `json:"recipient"`
 	SenderAction string    `json:"sender_action"`
