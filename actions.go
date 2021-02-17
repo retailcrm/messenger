@@ -14,11 +14,11 @@ const (
 	// ReadAction means that the event was a previous recipient reading their respective
 	// messages.
 	ReadAction
-	// PostBackAction represents post call back
+	// PostBackAction represents post call back.
 	PostBackAction
-	// OptInAction represents opting in through the Send to Messenger button
+	// OptInAction represents opting in through the Send to Messenger button.
 	OptInAction
-	// ReferralAction represents ?ref parameter in m.me URLs
+	// ReferralAction represents ?ref parameter in m.me URLs.
 	ReferralAction
 	// AccountLinkingAction means that the event concerns changes in account linking
 	// status.

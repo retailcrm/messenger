@@ -56,7 +56,7 @@ type Read struct {
 	Seq int `json:"seq"`
 }
 
-// PostBack represents postback callback
+// PostBack represents postback callback.
 type PostBack struct {
 	// Sender is who the message was sent from.
 	Sender Sender `json:"-"`
@@ -94,7 +94,7 @@ func (r Read) Watermark() time.Time {
 }
 
 // GetNLP simply unmarshals the NLP entities to the given struct and returns
-// an error if it's not possible
+// an error if it's not possible.
 func (m *Message) GetNLP(i interface{}) error {
 	return json.Unmarshal(m.NLP, &i)
 }

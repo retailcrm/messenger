@@ -135,17 +135,17 @@ func (m *Messenger) HandleRead(f ReadHandler) {
 	m.readHandlers = append(m.readHandlers, f)
 }
 
-// HandlePostBack adds a new PostBackHandler to the Messenger
+// HandlePostBack adds a new PostBackHandler to the Messenger.
 func (m *Messenger) HandlePostBack(f PostBackHandler) {
 	m.postBackHandlers = append(m.postBackHandlers, f)
 }
 
-// HandleReferral adds a new ReferralHandler to the Messenger
+// HandleReferral adds a new ReferralHandler to the Messenger.
 func (m *Messenger) HandleReferral(f ReferralHandler) {
 	m.referralHandlers = append(m.referralHandlers, f)
 }
 
-// HandleAccountLinking adds a new AccountLinkingHandler to the Messenger
+// HandleAccountLinking adds a new AccountLinkingHandler to the Messenger.
 func (m *Messenger) HandleAccountLinking(f AccountLinkingHandler) {
 	m.accountLinkingHandlers = append(m.accountLinkingHandlers, f)
 }
@@ -163,7 +163,7 @@ func (m *Messenger) Handler() http.Handler {
 // - Name
 // - First Name
 // - Last Name
-// - Profile Picture
+// - Profile Picture.
 func (m *Messenger) ProfileByID(id int64, profileFields []string) (Profile, error) {
 	p := Profile{}
 	url := fmt.Sprintf("%v%v", ProfileURL, id)
@@ -204,7 +204,7 @@ func (m *Messenger) ProfileByID(id int64, profileFields []string) (Profile, erro
 	return p, err
 }
 
-// GreetingSetting sends settings for greeting
+// GreetingSetting sends settings for greeting.
 func (m *Messenger) GreetingSetting(text string) (QueryResponse, error) {
 	var qr QueryResponse
 
@@ -239,7 +239,7 @@ func (m *Messenger) GreetingSetting(text string) (QueryResponse, error) {
 	return getFacebookQueryResponse(resp.Body)
 }
 
-// CallToActionsSetting sends settings for Get Started or Persistent Menu
+// CallToActionsSetting sends settings for Get Started or Persistent Menu.
 func (m *Messenger) CallToActionsSetting(state string, actions []CallToActionsItem) (QueryResponse, error) {
 	var qr QueryResponse
 
@@ -296,7 +296,7 @@ func (m *Messenger) handle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if rec.Object != "page" {
-		fmt.Println("Object is not page, undefined behaviour. Got", rec.Object)
+		fmt.Println("Object is not page, undefined behavior. Got", rec.Object)
 		respond(w, http.StatusUnprocessableEntity)
 		return
 	}
@@ -319,7 +319,7 @@ func respond(w http.ResponseWriter, code int) {
 	fmt.Fprintf(w, `{"code": %d, "status": "%s"}`, code, http.StatusText(code))
 }
 
-// checkIntegrity checks the integrity of the requests received
+// checkIntegrity checks the integrity of the requests received.
 func (m *Messenger) checkIntegrity(r *http.Request) error {
 	if m.appSecret == "" {
 		return xerrors.New("missing app secret")
@@ -424,7 +424,7 @@ func (m *Messenger) dispatch(r Receive) {
 	}
 }
 
-// Response returns new Response object
+// Response returns new Response object.
 func (m *Messenger) Response(to int64) *Response {
 	return &Response{
 		to:    Recipient{to},
@@ -437,7 +437,7 @@ func (m *Messenger) Send(to Recipient, message string, messagingType MessagingTy
 	return m.SendWithReplies(to, message, nil, messagingType, metadata, tags...)
 }
 
-// SendGeneralMessage will send the GenericTemplate message
+// SendGeneralMessage will send the GenericTemplate message.
 func (m *Messenger) SendGeneralMessage(to Recipient, elements *[]StructuredMessageElement, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
 	r := &Response{
 		token: m.token,
@@ -515,7 +515,7 @@ func (m *Messenger) classify(info MessageInfo) Action {
 	return UnknownAction
 }
 
-// newVerifyHandler returns a function which can be used to handle webhook verification
+// newVerifyHandler returns a function which can be used to handle webhook verification.
 func newVerifyHandler(token string) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.FormValue("hub.verify_token") == token {

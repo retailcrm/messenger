@@ -58,7 +58,7 @@ type OptIn struct {
 	Ref string `json:"ref"`
 }
 
-// ReferralMessage represents referral endpoint
+// ReferralMessage represents referral endpoint.
 type ReferralMessage struct {
 	*Referral
 
@@ -70,7 +70,7 @@ type ReferralMessage struct {
 	Time time.Time `json:"-"`
 }
 
-// Referral represents referral info
+// Referral represents referral info.
 type Referral struct {
 	// Data originally passed in the ref param
 	Ref string `json:"ref"`
@@ -112,13 +112,13 @@ type QuickReply struct {
 
 // Payload is the information on where an attachment is.
 type Payload struct {
-	URL string `json:"url,omitempty"`
+	URL   string `json:"url,omitempty"`
 	Title string `json:"title,omitempty"`
 	// Coordinates is Lat/Long pair of location pin
 	Coordinates *Coordinates `json:"coordinates,omitempty"`
 }
 
-// Coordinates is a pair of latitude and longitude
+// Coordinates is a pair of latitude and longitude.
 type Coordinates struct {
 	// Lat is latitude
 	Lat float64 `json:"lat"`
