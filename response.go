@@ -20,7 +20,7 @@ type MessagingType string
 
 const (
 	// SendMessageURL is API endpoint for sending messages.
-	SendMessageURL = "https://graph.facebook.com/v2.11/me/messages"
+	SendMessageURL = "https://graph.facebook.com/%s/me/messages"
 
 	// ImageAttachment is image attachment type.
 	ImageAttachment AttachmentType = "image"
@@ -72,8 +72,9 @@ func getFacebookQueryResponse(r io.Reader) (QueryResponse, error) {
 
 // Response is used for responding to events with messages.
 type Response struct {
-	token string
-	to    Recipient
+	token          string
+	to             Recipient
+	sendAPIVersion string
 }
 
 // Text sends a textual message.
@@ -205,7 +206,7 @@ func (r *Response) AttachmentData(dataType AttachmentType, filename string, file
 	multipartWriter.WriteField("recipient", fmt.Sprintf(`{"id":"%v"}`, r.to.ID))
 	multipartWriter.WriteField("message", fmt.Sprintf(`{"attachment":{"type":"%v", "payload":{}}}`, dataType))
 
-	req, err := http.NewRequest("POST", SendMessageURL, &body)
+	req, err := http.NewRequest("POST", fmt.Sprintf(SendMessageURL, r.sendAPIVersion), &body)
 	if err != nil {
 		return qr, err
 	}
@@ -294,7 +295,7 @@ func (r *Response) DispatchMessage(m interface{}) (QueryResponse, error) {
 		return res, err
 	}
 
-	req, err := http.NewRequest("POST", SendMessageURL, bytes.NewBuffer(data))
+	req, err := http.NewRequest("POST", fmt.Sprintf(SendMessageURL, r.sendAPIVersion), bytes.NewBuffer(data))
 	if err != nil {
 		return res, err
 	}

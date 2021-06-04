@@ -21,6 +21,8 @@ const (
 	ProfileFields = "first_name,last_name,profile_pic"
 	// SendSettingsURL is API endpoint for saving settings.
 	SendSettingsURL = "https://graph.facebook.com/v2.6/me/thread_settings"
+	// DefaultSendAPIVersion is a default Send API version.
+	DefaultSendAPIVersion = "v2.11"
 )
 
 // Options are the settings used when creating a Messenger client.
@@ -40,6 +42,8 @@ type Options struct {
 	WebhookURL string
 	// Mux is shared mux between several Messenger objects
 	Mux *http.ServeMux
+	// SendAPIVersion is an Send API version.
+	SendAPIVersion string
 }
 
 // MessageHandler is a handler used for responding to a message containing text.
@@ -78,6 +82,7 @@ type Messenger struct {
 	verifyHandler          func(http.ResponseWriter, *http.Request)
 	verify                 bool
 	appSecret              string
+	sendAPIVersion         string
 }
 
 // New creates a new Messenger. You pass in Options in order to affect settings.
@@ -87,14 +92,19 @@ func New(mo Options) *Messenger {
 	}
 
 	m := &Messenger{
-		mux:       mo.Mux,
-		token:     mo.Token,
-		verify:    mo.Verify,
-		appSecret: mo.AppSecret,
+		mux:            mo.Mux,
+		token:          mo.Token,
+		verify:         mo.Verify,
+		appSecret:      mo.AppSecret,
+		sendAPIVersion: mo.SendAPIVersion,
 	}
 
 	if mo.WebhookURL == "" {
 		mo.WebhookURL = "/"
+	}
+
+	if m.sendAPIVersion == "" {
+		m.sendAPIVersion = DefaultSendAPIVersion
 	}
 
 	m.verifyHandler = newVerifyHandler(mo.VerifyToken)
@@ -340,8 +350,9 @@ func (m *Messenger) dispatch(r Receive) {
 			}
 
 			resp := &Response{
-				to:    Recipient{info.Sender.ID},
-				token: m.token,
+				to:             Recipient{info.Sender.ID},
+				token:          m.token,
+				sendAPIVersion: m.sendAPIVersion,
 			}
 
 			switch a {
@@ -401,8 +412,9 @@ func (m *Messenger) dispatch(r Receive) {
 // Response returns new Response object
 func (m *Messenger) Response(to int64) *Response {
 	return &Response{
-		to:    Recipient{to},
-		token: m.token,
+		to:             Recipient{to},
+		token:          m.token,
+		sendAPIVersion: m.sendAPIVersion,
 	}
 }
 
@@ -414,8 +426,9 @@ func (m *Messenger) Send(to Recipient, message string, messagingType MessagingTy
 // SendGeneralMessage will send the GenericTemplate message
 func (m *Messenger) SendGeneralMessage(to Recipient, elements *[]StructuredMessageElement, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
 	r := &Response{
-		token: m.token,
-		to:    to,
+		token:          m.token,
+		to:             to,
+		sendAPIVersion: m.sendAPIVersion,
 	}
 	return r.GenericTemplate(elements, messagingType, metadata, tags...)
 }
@@ -423,8 +436,9 @@ func (m *Messenger) SendGeneralMessage(to Recipient, elements *[]StructuredMessa
 // SendWithReplies sends a textual message to a user, but gives them the option of numerous quick response options.
 func (m *Messenger) SendWithReplies(to Recipient, message string, replies []QuickReply, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
 	response := &Response{
-		token: m.token,
-		to:    to,
+		token:          m.token,
+		to:             to,
+		sendAPIVersion: m.sendAPIVersion,
 	}
 
 	return response.TextWithReplies(message, replies, messagingType, metadata, tags...)
@@ -433,8 +447,9 @@ func (m *Messenger) SendWithReplies(to Recipient, message string, replies []Quic
 // Attachment sends an image, sound, video or a regular file to a given recipient.
 func (m *Messenger) Attachment(to Recipient, dataType AttachmentType, url string, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
 	response := &Response{
-		token: m.token,
-		to:    to,
+		token:          m.token,
+		to:             to,
+		sendAPIVersion: m.sendAPIVersion,
 	}
 
 	return response.Attachment(dataType, url, messagingType, metadata, tags...)
