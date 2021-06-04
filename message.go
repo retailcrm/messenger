@@ -33,6 +33,18 @@ type Message struct {
 	// Entities for NLP
 	// https://developers.facebook.com/docs/messenger-platform/built-in-nlp/
 	NLP json.RawMessage `json:"nlp"`
+	// Read Instagram message data to which this reply was sent to.
+	Read *IGMessageRead `json:"read,omitempty"`
+	// Reaction represents reaction to Instagram message.
+	Reaction *IGMessageReaction `json:"reaction,omitempty"`
+	// Referral with Instagram product data.
+	Referral *IGMessageReferral `json:"referral,omitempty"`
+	// IsUnsupported is being sent if Instagram message is not supported.
+	IsUnsupported bool `json:"is_unsupported,omitempty"`
+	// IsDeleted is being sent if message was deleted.
+	IsDeleted bool `json:"is_deleted,omitempty"`
+	// ReplyTo the Instagram story or to the message.
+	ReplyTo *IGReplyTo `json:"reply_to"`
 }
 
 // Delivery represents a the event fired when Facebook delivers a message to the
@@ -54,6 +66,60 @@ type Read struct {
 	RawWatermark int64 `json:"watermark"`
 	// Seq is the sequence the message was sent in.
 	Seq int `json:"seq"`
+}
+
+// IGMessageRead represents data with the read message ID. Present in the Instagram webhook.
+type IGMessageRead struct {
+	// Mid is a message ID.
+	Mid string `json:"mid"`
+}
+
+// IGMessageReaction represents reaction to the Instagram message.
+type IGMessageReaction struct {
+	// Mid is a message ID.
+	Mid string `json:"mid"`
+	// Action can be {react|unreact}
+	Action string `json:"action"`
+	// Reaction is a reaction name. Optional.
+	Reaction string `json:"reaction,omitempty"`
+	// Emoji is optional.
+	Emoji string `json:"emoji,omitempty"`
+}
+
+// IGMessageProduct represents Instagram product.
+type IGMessageProduct struct {
+	// ID of the product.
+	ID string `json:"id,omitempty"`
+}
+
+// IGMessageReferral represents Instagram message referral with product ID.
+type IGMessageReferral struct {
+	// Product data.
+	Product IGMessageProduct `json:"product,omitempty"`
+}
+
+// IGPostback represents Instagram postback webhook data.
+type IGPostback struct {
+	// Selected icebreaker question or title for the CTA (Generic Template)
+	Title string `json:"title,omitempty"`
+	// Payload is user defined payload.
+	Payload string `json:"payload"`
+}
+
+// IGReplyTo represents data of the thing to what reply has been sent.
+type IGReplyTo struct {
+	// Mid is a message ID to which reply was sent.
+	Mid string `json:"mid"`
+	// Story data.
+	Story *IGReplyToStory `json:"story,omitempty"`
+}
+
+// IGReplyToStory is a story data to which reply has been sent.
+type IGReplyToStory struct {
+	// URL of the story.
+	URL string `json:"url,omitempty"`
+	// ID of the story.
+	ID string `json:"id,omitempty"`
 }
 
 // PostBack represents postback callback.
