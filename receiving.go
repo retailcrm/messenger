@@ -87,7 +87,9 @@ type Sender struct {
 
 // Recipient is who the message was sent to.
 type Recipient struct {
-	ID int64 `json:"id,string"`
+	ID        int64  `json:"id,string,omitempty"`
+	PostID    string `json:"post_id,omitempty"`
+	CommentID string `json:"comment_id,omitempty"`
 }
 
 // Attachment is a file which used in a message.
