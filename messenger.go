@@ -374,7 +374,7 @@ func (m *Messenger) dispatch(r Receive) {
 			}
 
 			resp := &Response{
-				to:             Recipient{info.Sender.ID},
+				to:             Recipient{ID: info.Sender.ID},
 				token:          m.token,
 				sendAPIVersion: m.sendAPIVersion,
 			}
@@ -436,7 +436,7 @@ func (m *Messenger) dispatch(r Receive) {
 // Response returns new Response object.
 func (m *Messenger) Response(to int64) *Response {
 	return &Response{
-		to:             Recipient{to},
+		to:             Recipient{ID: to},
 		token:          m.token,
 		sendAPIVersion: m.sendAPIVersion,
 	}

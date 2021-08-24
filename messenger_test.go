@@ -106,7 +106,7 @@ func TestMessenger_Dispatch(t *testing.T) {
 		messages := []MessageInfo{
 			{
 				Sender:    Sender{111},
-				Recipient: Recipient{222},
+				Recipient: Recipient{ID: 222},
 				// 2018-11-24 21:31:51 UTC + 999ms
 				Timestamp: 1543095111999,
 				Message:   &Message{},
@@ -138,7 +138,7 @@ func TestMessenger_Dispatch(t *testing.T) {
 		messages := []MessageInfo{
 			{
 				Sender:    Sender{111},
-				Recipient: Recipient{222},
+				Recipient: Recipient{ID: 222},
 				// 2018-11-24 21:31:51 UTC + 999ms
 				Timestamp: 1543095111999,
 				Delivery:  &Delivery{},
@@ -170,7 +170,7 @@ func TestMessenger_Dispatch(t *testing.T) {
 		messages := []MessageInfo{
 			{
 				Sender:    Sender{111},
-				Recipient: Recipient{222},
+				Recipient: Recipient{ID: 222},
 				// 2018-11-24 21:31:51 UTC + 999ms
 				Timestamp: 1543095111999,
 				Read:      &Read{},
@@ -205,7 +205,7 @@ func TestMessenger_Dispatch(t *testing.T) {
 		messages := []MessageInfo{
 			{
 				Sender:    Sender{111},
-				Recipient: Recipient{222},
+				Recipient: Recipient{ID: 222},
 				// 2018-11-24 21:31:51 UTC + 999ms
 				Timestamp: 1543095111999,
 				PostBack:  &PostBack{},
@@ -240,7 +240,7 @@ func TestMessenger_Dispatch(t *testing.T) {
 		messages := []MessageInfo{
 			{
 				Sender:    Sender{111},
-				Recipient: Recipient{222},
+				Recipient: Recipient{ID: 222},
 				// 2018-11-24 21:31:51 UTC + 999ms
 				Timestamp: 1543095111999,
 				OptIn:     &OptIn{},
@@ -275,7 +275,7 @@ func TestMessenger_Dispatch(t *testing.T) {
 		messages := []MessageInfo{
 			{
 				Sender:    Sender{111},
-				Recipient: Recipient{222},
+				Recipient: Recipient{ID: 222},
 				// 2018-11-24 21:31:51 UTC + 999ms
 				Timestamp:       1543095111999,
 				ReferralMessage: &ReferralMessage{},
