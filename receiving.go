@@ -118,6 +118,14 @@ type Payload struct {
 	Title string `json:"title,omitempty"`
 	// Coordinates is Lat/Long pair of location pin
 	Coordinates *Coordinates `json:"coordinates,omitempty"`
+	TemplateType string `json:"template_type,omitempty"`
+	Buttons []Button `json:"buttons,omitempty"`
+}
+
+type Button struct {
+	Type string `json:"type,omitempty"`
+	Title string `json:"title,omitempty"`
+	Payload string `json:"payload,omitempty"`
 }
 
 // Coordinates is a pair of latitude and longitude.
