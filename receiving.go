@@ -129,7 +129,7 @@ type Button struct {
 	URL string `json:"url,omitempty"`
 	WebviewHeightRatio string `json:"webview_height_ratio,omitempty"`
 	MessengerExtensions bool `json:"messenger_extensions,omitempty"`
-	FallbackURl string `json:"fallback_url,omitempty"`
+	FallbackURL string `json:"fallback_url,omitempty"`
 	WebviewShareButton string `json:"webview_share_button,omitempty"`
 }
 
