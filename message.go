@@ -130,17 +130,14 @@ type PostBack struct {
 	Recipient Recipient `json:"-"`
 	// Time is when the message was sent.
 	Time time.Time `json:"-"`
-	// PostBack Payload
-	Payload PostBackPayload `json:"payload"`
+	// PostBack ID
+	Payload string `json:"payload"`
 	// Optional referral info
 	Referral Referral `json:"referral"`
-}
-
-// PostBackPayload represents payload data in PostBack
-type PostBackPayload struct {
-	Title   string `json:"title"`
-	Payload string `json:"payload"`
-	Mid     string `json:"mid"`
+	// Title for the CTA that was clicked on
+	Title string `json:"title"`
+	// Message ID
+	Mid string `json:"mid"`
 }
 
 type AccountLinking struct {
