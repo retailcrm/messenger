@@ -117,20 +117,20 @@ type Payload struct {
 	URL   string `json:"url,omitempty"`
 	Title string `json:"title,omitempty"`
 	// Coordinates is Lat/Long pair of location pin
-	Coordinates *Coordinates `json:"coordinates,omitempty"`
-	TemplateType string `json:"template_type,omitempty"`
-	Buttons []Button `json:"buttons,omitempty"`
+	Coordinates  *Coordinates `json:"coordinates,omitempty"`
+	TemplateType string       `json:"template_type,omitempty"`
+	Buttons      []Button     `json:"buttons,omitempty"`
 }
 
 type Button struct {
-	Type string `json:"type,omitempty"`
-	Title string `json:"title,omitempty"`
-	Payload string `json:"payload,omitempty"`
-	URL string `json:"url,omitempty"`
-	WebviewHeightRatio string `json:"webview_height_ratio,omitempty"`
-	MessengerExtensions bool `json:"messenger_extensions,omitempty"`
-	FallbackURL string `json:"fallback_url,omitempty"`
-	WebviewShareButton string `json:"webview_share_button,omitempty"`
+	Type                string `json:"type,omitempty"`
+	Title               string `json:"title,omitempty"`
+	Payload             string `json:"payload,omitempty"`
+	URL                 string `json:"url,omitempty"`
+	WebviewHeightRatio  string `json:"webview_height_ratio,omitempty"`
+	MessengerExtensions bool   `json:"messenger_extensions,omitempty"`
+	FallbackURL         string `json:"fallback_url,omitempty"`
+	WebviewShareButton  string `json:"webview_share_button,omitempty"`
 }
 
 // Coordinates is a pair of latitude and longitude.

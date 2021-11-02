@@ -138,9 +138,9 @@ type PostBack struct {
 
 // PostBackPayload represents payload data in PostBack
 type PostBackPayload struct {
-	Title string `json:"title"`
+	Title   string `json:"title"`
 	Payload string `json:"payload"`
-	Mid string `json:"mid"`
+	Mid     string `json:"mid"`
 }
 
 type AccountLinking struct {
