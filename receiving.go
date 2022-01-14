@@ -78,6 +78,24 @@ type Referral struct {
 	Source string `json:"source"`
 	// The identifier dor the referral
 	Type string `json:"type"`
+	// ID of the ad
+	AdID string `json:"ad_id,omitempty"`
+	// The data containing information about the CTM ad, the user initiated the thread from.
+	AdsContextData AdsContextData `json:"ads_context_data,omitempty"`
+}
+
+// AdsContextData represents data containing information about the CTM ad, the user initiated the thread from.
+type AdsContextData struct {
+	// Title of the Ad
+	AdTitle string `json:"ad_title"`
+	// Url of the image from the Ad the user is interested
+	PhotoURL string `json:"photo_url,omitempty"`
+	// Thumbnail url of the video from the ad
+	VideoURL string `json:"video_url,omitempty"`
+	// ID of the post
+	PostID string `json:"post_id"`
+	// Product ID from the Ad the user is interested
+	ProductID string `json:"product_id,omitempty"`
 }
 
 // Sender is who the message was sent from.
