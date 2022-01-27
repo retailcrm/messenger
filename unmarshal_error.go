@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 )
 
 var ErrUnmarshal = errors.New("unmarshal error")
@@ -15,7 +16,7 @@ type UnmarshalError struct {
 }
 
 func (u *UnmarshalError) Error() string {
-	content, err := io.ReadAll(u.Content)
+	content, err := ioutil.ReadAll(u.Content)
 	if err != nil {
 		content = []byte("[can not read content]")
 	}
