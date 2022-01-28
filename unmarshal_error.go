@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 )
 
 var ErrUnmarshal = errors.New("unmarshal error")
@@ -30,7 +31,7 @@ func NewUnmarshalError(err error) *UnmarshalError {
 }
 
 func (u *UnmarshalError) WithReader(reader io.Reader) *UnmarshalError {
-	content, _ := io.ReadAll(reader)
+	content, _ := ioutil.ReadAll(reader)
 	u.Content = content
 	return u
 }
