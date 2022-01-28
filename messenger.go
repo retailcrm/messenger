@@ -198,7 +198,7 @@ func (m *Messenger) ProfileByID(id int64, profileFields []string) (Profile, erro
 
 	err = json.Unmarshal(content, &p)
 	if err != nil {
-		return p, NewUnmarshalError().WithReaderContent(content)
+		return p, NewUnmarshalError(err).WithContent(content)
 	}
 
 	if p == *new(Profile) {

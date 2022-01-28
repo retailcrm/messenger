@@ -1,43 +1,42 @@
 package messenger
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 )
 
 var ErrUnmarshal = errors.New("unmarshal error")
 
 type UnmarshalError struct {
-	Content io.Reader
-	Err     error
+	Content   []byte
+	ErrorText string
+	Err       error
 }
 
 func (u *UnmarshalError) Error() string {
-	content, err := ioutil.ReadAll(u.Content)
-	if err != nil {
-		content = []byte("[can not read content]")
-	}
-	return fmt.Sprintf("can not unmarshal content: %s", string(content))
+	return fmt.Sprintf("can not unmarshal content: %s; error: %s", string(u.Content), u.ErrorText)
 }
 
 func (u *UnmarshalError) Unwrap() error {
 	return u.Err
 }
 
-func NewUnmarshalError() *UnmarshalError {
-	return &UnmarshalError{Err: ErrUnmarshal}
+func NewUnmarshalError(err error) *UnmarshalError {
+	return &UnmarshalError{
+		Err:       ErrUnmarshal,
+		ErrorText: err.Error(),
+	}
 }
 
-func (u *UnmarshalError) WithReader(content io.Reader) *UnmarshalError {
+func (u *UnmarshalError) WithReader(reader io.Reader) *UnmarshalError {
+	content, _ := io.ReadAll(reader)
 	u.Content = content
 	return u
 }
 
-func (u *UnmarshalError) WithReaderContent(content []byte) *UnmarshalError {
-	u.Content = bytes.NewReader(content)
+func (u *UnmarshalError) WithContent(content []byte) *UnmarshalError {
+	u.Content = content
 	return u
 }
 
