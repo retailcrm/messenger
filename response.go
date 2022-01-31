@@ -87,9 +87,10 @@ func checkFacebookError(r io.Reader) error {
 	var err error
 
 	qr := QueryResponse{}
-	err = json.NewDecoder(r).Decode(&qr)
+	decoder := json.NewDecoder(r)
+	err = decoder.Decode(&qr)
 	if err != nil {
-		return xerrors.Errorf("json unmarshal error: %w", err)
+		return NewUnmarshalError(err).WithReader(decoder.Buffered())
 	}
 	if qr.Error != nil {
 		return xerrors.Errorf("facebook error: %w", qr.Error)
@@ -100,9 +101,9 @@ func checkFacebookError(r io.Reader) error {
 
 func getFacebookQueryResponse(r io.Reader) (QueryResponse, error) {
 	qr := QueryResponse{}
-	err := json.NewDecoder(r).Decode(&qr)
-	if err != nil {
-		return qr, xerrors.Errorf("json unmarshal error: %w", err)
+	decoder := json.NewDecoder(r)
+	if err := decoder.Decode(&qr); err != nil {
+		return qr, NewUnmarshalError(err).WithReader(decoder.Buffered())
 	}
 	if qr.Error != nil {
 		return qr, xerrors.Errorf("facebook error: %w", qr.Error)
