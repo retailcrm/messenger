@@ -66,8 +66,8 @@ type Read struct {
 	RawWatermark int64 `json:"watermark"`
 	// Seq is the sequence the message was sent in.
 	Seq int `json:"seq"`
-	// MID is id of message
-	MID string `json:"mid"`
+	// Mid is the ID of the message.
+	Mid string `json:"mid"`
 }
 
 // IGMessageRead represents data with the read message ID. Present in the Instagram webhook.
