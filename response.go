@@ -24,7 +24,7 @@ type ImageAspectRatio string
 
 const (
 	// DefaultSendAPIVersion is a default Send API version
-	DefaultSendAPIVersion = "v2.11"
+	DefaultSendAPIVersion = "v11.0"
 	// SendMessageURL is API endpoint for sending messages.
 	SendMessageURL = "https://graph.facebook.com/%s/me/messages"
 	// ThreadControlURL is the API endpoint for passing thread control.
