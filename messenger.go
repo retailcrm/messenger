@@ -15,12 +15,12 @@ import (
 )
 
 const (
-	// ProfileURL is the API endpoint used for retrieving profiles.
-	// Used in the form: https://graph.facebook.com/v11.0/<USER_ID>?fields=<PROFILE_FIELDS>&access_token=<PAGE_ACCESS_TOKEN>
-	ProfileURL = "https://graph.facebook.com/v11.0/"
-
 	// ProfileFields is a list of JSON field names which will be populated by the profile query.
 	ProfileFields = "first_name,last_name,profile_pic"
+
+	// ProfileURL is the API endpoint used for retrieving profiles.
+	// Used in the form: https://graph.facebook.com/v14.0/<USER_ID>?fields=<PROFILE_FIELDS>&access_token=<PAGE_ACCESS_TOKEN>
+	ProfileURL = "https://graph.facebook.com/v14.0/"
 
 	// SendSettingsURL is API endpoint for saving settings.
 	SendSettingsURL = "https://graph.facebook.com/v11.0/me/thread_settings"
@@ -302,7 +302,7 @@ func (m *Messenger) handle(w http.ResponseWriter, r *http.Request) {
 		respond(w, http.StatusBadRequest)
 		return
 	}
-	
+
 	if rec.Object != "page" && rec.Object != "instagram" {
 		fmt.Println("Object is not page or instagram, undefined behaviour. Got", rec.Object)
 		respond(w, http.StatusUnprocessableEntity)
