@@ -352,8 +352,8 @@ func (r *Response) ListTemplate(elements *[]StructuredMessageElement, messagingT
 	return r.DispatchMessage(&m)
 }
 
-// SenderAction sends a info about sender action.
-func (r *Response) SenderAction(action string) (QueryResponse, error) {
+// SenderAction sends an info about sender action.
+func (r *Response) SenderAction(action SenderAction) (QueryResponse, error) {
 	m := SendSenderAction{
 		Recipient:    r.to,
 		SenderAction: action,
@@ -547,6 +547,6 @@ type StructuredMessageButton struct {
 
 // SendSenderAction is the information about sender action.
 type SendSenderAction struct {
-	Recipient    Recipient `json:"recipient"`
-	SenderAction string    `json:"sender_action"`
+	Recipient    Recipient    `json:"recipient"`
+	SenderAction SenderAction `json:"sender_action"`
 }
