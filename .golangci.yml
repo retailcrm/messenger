@@ -32,19 +32,15 @@ linters:
     - gocyclo
     - godot
     - goimports
-    - golint
-    - gomnd
+    - revive
     - gosec
     - ifshort
-    - interfacer
     - lll
     - makezero
-    - maligned
     - misspell
     - nestif
     - prealloc
     - predeclared
-    - scopelint
     - sqlclosecheck
     - unconvert
     - whitespace
@@ -56,9 +52,11 @@ linters-settings:
     enable:
       - assign
       - atomic
+      - atomicalign
       - bools
       - buildtag
       - copylocks
+      - fieldalignment
       - httpresponse
       - loopclosure
       - lostcancel
@@ -140,15 +138,13 @@ linters-settings:
   gocyclo:
     min-complexity: 25
   goimports:
-    local-prefixes: github.com/retailcrm/messenger
+    local-prefixes: github.com/retailcrm/mg-transport-core
   lll:
     line-length: 120
-  maligned:
-    suggest-new: true
   misspell:
     locale: US
   nestif:
-    min-complexity: 4
+    min-complexity: 6
   whitespace:
     multi-if: false
     multi-func: false
@@ -157,8 +153,8 @@ issues:
   exclude-rules:
     - path: _test\.go
       linters:
-        - gomnd
         - lll
+        - errorlint
         - bodyclose
         - errcheck
         - sqlclosecheck
@@ -166,7 +162,6 @@ issues:
         - ineffassign
         - whitespace
         - makezero
-        - maligned
         - ifshort
         - errcheck
         - funlen
@@ -174,6 +169,9 @@ issues:
         - gocognit
         - gocyclo
         - godot
+        - unused
+    - path: \.go
+      text: "Error return value of `io.WriteString` is not checked"
   exclude-use-default: true
   exclude-case-sensitive: false
   max-issues-per-linter: 0
