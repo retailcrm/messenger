@@ -508,6 +508,15 @@ func (m *Messenger) EnableChatExtension(homeURL HomeURL) error {
 	return checkFacebookError(resp.Body)
 }
 
+func (m *Messenger) SenderAction(to Recipient, action SenderAction) (QueryResponse, error) {
+	response := &Response{
+		token:          m.token,
+		to:             to,
+		sendAPIVersion: m.sendAPIVersion,
+	}
+	return response.SenderAction(action)
+}
+
 // classify determines what type of message a webhook event is.
 func (m *Messenger) classify(info MessageInfo) Action {
 	if info.Message != nil {

@@ -24,3 +24,20 @@ const (
 	// status.
 	AccountLinkingAction
 )
+
+// SenderAction is used to send a specific action (event) to the Facebook.
+// The result of sending said action is supposed to give more interactivity to the bot.
+type SenderAction string
+
+const (
+	// MarkSeen marks message as seen.
+	MarkSeen SenderAction = "MARK_SEEN"
+	// TypingOn turns on "Bot is typing..." indicator.
+	TypingOn SenderAction = "TYPING_ON"
+	// TypingOff turns off typing indicator.
+	TypingOff SenderAction = "TYPING_OFF"
+	// React to the message.
+	React SenderAction = "REACT"
+	// Unreact to the message (remove reaction).
+	Unreact SenderAction = "UNREACT"
+)
