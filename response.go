@@ -182,7 +182,7 @@ func (r *Response) Image(im image.Image) (QueryResponse, error) {
 		return qr, err
 	}
 
-	return r.AttachmentData(ImageAttachment, "meme.jpg", imageBytes)
+	return r.AttachmentData(ImageAttachment, "meme.jpg", "image/jpeg", imageBytes)
 }
 
 // Attachment sends an image, sound, video or a regular file to a chat.
@@ -228,15 +228,14 @@ func createFormFile(filename string, w *multipart.Writer, contentType string) (i
 }
 
 // AttachmentData sends an image, sound, video or a regular file to a chat via an io.Reader.
-func (r *Response) AttachmentData(dataType AttachmentType, filename string, filedata io.Reader) (QueryResponse, error) {
+func (r *Response) AttachmentData(
+	dataType AttachmentType, filename string, contentType string, filedata io.Reader) (QueryResponse, error) {
 	var qr QueryResponse
 
 	filedataBytes, err := ioutil.ReadAll(filedata)
 	if err != nil {
 		return qr, err
 	}
-	contentType := http.DetectContentType(filedataBytes[:512])
-	fmt.Println("Content-type detected:", contentType)
 
 	var body bytes.Buffer
 	multipartWriter := multipart.NewWriter(&body)
