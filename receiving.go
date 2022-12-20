@@ -82,6 +82,8 @@ type Referral struct {
 	AdID string `json:"ad_id,omitempty"`
 	// The data containing information about the CTM ad, the user initiated the thread from.
 	AdsContextData AdsContextData `json:"ads_context_data,omitempty"`
+	// URI of the site from which the message was sent to the Facebook chat plugin.
+	RefererURI string `json:"referer_uri,omitempty"`
 }
 
 // AdsContextData represents data containing information about the CTM ad, the user initiated the thread from.
