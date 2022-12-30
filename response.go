@@ -22,6 +22,7 @@ type MessagingType string
 type NotificationType string
 type TopElementStyle string
 type ImageAspectRatio string
+type TagType string
 
 const (
 	// DefaultSendAPIVersion is a default Send API version
@@ -71,6 +72,17 @@ const (
 	SenderActionMarkSeen  SenderAction = "mark_seen"
 	SenderActionTypingOn  SenderAction = "typing_on"
 	SenderActionTypingOff SenderAction = "typing_off"
+
+	// TagAccountUpdateType Tags the message you are sending to your customer as a non-recurring update to their application or account. Not available for Instagram Messaging API
+	TagAccountUpdateType TagType = "ACCOUNT_UPDATE"
+	// TagConfirmedEventUpdateType Tags the message you are sending to your customer as a reminder fo an upcoming event or an update for an event in procgres for which the customer is registered. Not available for Instagram Messaging API
+	TagConfirmedEventUpdateType TagType = "CONFIRMED_EVENT_UPDATE"
+	// TagCustomerFeedbackType Tags the message you are sending to your customer as a Customer Feedback Survey. Customer feedback messages must be sent within 7 days of the customer's last message. Not available for Instagram Messaging API
+	TagCustomerFeedbackType TagType = "CUSTOMER_FEEDBACK"
+	// TagHumanAgentType When this tag is added to a message to a customer, it allows a human agent to respond to a person's message. Messages can be sent within 7 days of the person's. Human agent support is for issues that cannot be resolved within the standard 24 hour messaging window
+	TagHumanAgentType TagType = "HUMAN_AGENT"
+	// TagPostPurchaseUpdateType Tags the message you are sending to your customer as an update for a recent purchase made by the customer. Not available for Instagram Messaging API.
+	TagPostPurchaseUpdateType TagType = "POST_PURCHASE_UPDATE"
 )
 
 // QueryResponse is the response sent back by Facebook when setting up things
@@ -140,7 +152,7 @@ func (r *Response) Text(
 	messagingType MessagingType,
 	metadata string,
 	notificationType NotificationType,
-	tags ...string,
+	tags ...TagType,
 ) (QueryResponse, error) {
 	return r.TextWithReplies(message, nil, messagingType, metadata, notificationType, tags...)
 }
@@ -157,9 +169,9 @@ func (r *Response) TextWithReplies(
 	messagingType MessagingType,
 	metadata string,
 	notificationType NotificationType,
-	tags ...string,
+	tags ...TagType,
 ) (QueryResponse, error) {
-	var tag string
+	var tag TagType
 	if len(tags) > 0 {
 		tag = tags[0]
 	}
@@ -186,9 +198,9 @@ func (r *Response) AttachmentWithReplies(
 	messagingType MessagingType,
 	metadata string,
 	notificationType NotificationType,
-	tags ...string,
+	tags ...TagType,
 ) (QueryResponse, error) {
-	var tag string
+	var tag TagType
 	if len(tags) > 0 {
 		tag = tags[0]
 	}
@@ -457,7 +469,7 @@ type SendMessage struct {
 	MessagingType    MessagingType    `json:"messaging_type"`
 	Recipient        Recipient        `json:"recipient"`
 	Message          MessageData      `json:"message"`
-	Tag              string           `json:"tag,omitempty"`
+	Tag              TagType          `json:"tag,omitempty"`
 	NotificationType NotificationType `json:"notification_type,omitempty"`
 }
 
