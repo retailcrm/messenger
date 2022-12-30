@@ -443,7 +443,7 @@ func (m *Messenger) Response(to int64) *Response {
 }
 
 // Send will send a textual message to a user. This user must have previously initiated a conversation with the bot.
-func (m *Messenger) Send(to Recipient, message string, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
+func (m *Messenger) Send(to Recipient, message string, messagingType MessagingType, metadata string, tags ...TagType) (QueryResponse, error) {
 	return m.SendWithReplies(to, message, nil, messagingType, metadata, tags...)
 }
 
@@ -458,14 +458,14 @@ func (m *Messenger) SendGeneralMessage(to Recipient, elements *[]StructuredMessa
 }
 
 // SendWithReplies sends a textual message to a user, but gives them the option of numerous quick response options.
-func (m *Messenger) SendWithReplies(to Recipient, message string, replies []QuickReply, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
+func (m *Messenger) SendWithReplies(to Recipient, message string, replies []QuickReply, messagingType MessagingType, metadata string, tags ...TagType) (QueryResponse, error) {
 	response := &Response{
 		token:          m.token,
 		to:             to,
 		sendAPIVersion: m.sendAPIVersion,
 	}
 
-	return response.TextWithReplies(message, replies, messagingType, metadata, tags...)
+	return response.TextWithReplies(message, replies, messagingType, metadata, NotificationRegularType, tags...)
 }
 
 // Attachment sends an image, sound, video or a regular file to a given recipient.
