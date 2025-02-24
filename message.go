@@ -94,8 +94,10 @@ type IGMessageProduct struct {
 	ID string `json:"id,omitempty"`
 }
 
-// IGMessageReferral represents Instagram message referral with product ID.
+// IGMessageReferral represents Instagram message referral with ad data and product ID.
 type IGMessageReferral struct {
+	// Ad data
+	Referral
 	// Product data.
 	Product IGMessageProduct `json:"product,omitempty"`
 }
