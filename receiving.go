@@ -35,6 +35,8 @@ type MessageInfo struct {
 	// Delivery is the contents of a message if it is a DeliveryAction.
 	// Nil if it is not a DeliveryAction.
 	Delivery *Delivery `json:"delivery"`
+	// Reaction represents reaction to Instagram message.
+	Reaction *IGMessageReaction `json:"reaction,omitempty"`
 
 	PostBack *PostBack `json:"postback"`
 
