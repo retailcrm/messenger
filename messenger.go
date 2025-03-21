@@ -304,7 +304,7 @@ func (m *Messenger) handle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if rec.Object != "page" && rec.Object != "instagram" {
-		fmt.Println("Object is not page or instagram, undefined behaviour. Got", rec.Object)
+		fmt.Println("Object is not page or instagram, undefined behavior. Got", rec.Object)
 		respond(w, http.StatusUnprocessableEntity)
 		return
 	}

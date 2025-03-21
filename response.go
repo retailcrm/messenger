@@ -52,11 +52,11 @@ const (
 	// NonPromotionalSubscriptionType is NON_PROMOTIONAL_SUBSCRIPTION messaging type.
 	NonPromotionalSubscriptionType MessagingType = "NON_PROMOTIONAL_SUBSCRIPTION"
 
-	// NotificationNoPushType is NO_PUSH notification type. No notification
+	// NotificationNoPushType is NO_PUSH notification type. No notification.
 	NotificationNoPushType NotificationType = "NO_PUSH"
-	// NotificationRegularType is REGULAR notification type (default). Sound or vibration when a message is received by a person
+	// NotificationRegularType is REGULAR notification type (default). Sound or vibration when a message is received by a person.
 	NotificationRegularType NotificationType = "REGULAR"
-	// NotificationSilentPushType is SILENT_PUSH notification type. On-screen notification only
+	// NotificationSilentPushType is SILENT_PUSH notification type. On-screen notification only.
 	NotificationSilentPushType NotificationType = "SILENT_PUSH"
 
 	// TopElementStyle is compact.
@@ -73,13 +73,13 @@ const (
 	SenderActionTypingOn  SenderAction = "typing_on"
 	SenderActionTypingOff SenderAction = "typing_off"
 
-	// TagAccountUpdateType Tags the message you are sending to your customer as a non-recurring update to their application or account. Not available for Instagram Messaging API
+	// TagAccountUpdateType Tags the message you are sending to your customer as a non-recurring update to their application or account. Not available for Instagram Messaging API.
 	TagAccountUpdateType TagType = "ACCOUNT_UPDATE"
-	// TagConfirmedEventUpdateType Tags the message you are sending to your customer as a reminder fo an upcoming event or an update for an event in procgres for which the customer is registered. Not available for Instagram Messaging API
+	// TagConfirmedEventUpdateType Tags the message you are sending to your customer as a reminder fo an upcoming event or an update for an event in procgres for which the customer is registered. Not available for Instagram Messaging API.
 	TagConfirmedEventUpdateType TagType = "CONFIRMED_EVENT_UPDATE"
-	// TagCustomerFeedbackType Tags the message you are sending to your customer as a Customer Feedback Survey. Customer feedback messages must be sent within 7 days of the customer's last message. Not available for Instagram Messaging API
+	// TagCustomerFeedbackType Tags the message you are sending to your customer as a Customer Feedback Survey. Customer feedback messages must be sent within 7 days of the customer's last message. Not available for Instagram Messaging API.
 	TagCustomerFeedbackType TagType = "CUSTOMER_FEEDBACK"
-	// TagHumanAgentType When this tag is added to a message to a customer, it allows a human agent to respond to a person's message. Messages can be sent within 7 days of the person's. Human agent support is for issues that cannot be resolved within the standard 24 hour messaging window
+	// TagHumanAgentType When this tag is added to a message to a customer, it allows a human agent to respond to a person's message. Messages can be sent within 7 days of the person's. Human agent support is for issues that cannot be resolved within the standard 24 hour messaging window.
 	TagHumanAgentType TagType = "HUMAN_AGENT"
 	// TagPostPurchaseUpdateType Tags the message you are sending to your customer as an update for a recent purchase made by the customer. Not available for Instagram Messaging API.
 	TagPostPurchaseUpdateType TagType = "POST_PURCHASE_UPDATE"
@@ -162,7 +162,7 @@ func (r *Response) Text(
 // only supply tags when messagingType == "MESSAGE_TAG"
 // (see https://developers.facebook.com/docs/messenger-platform/send-messages#messaging_types for more).
 // notificationType should be one of the following: "NO_PUSH","REGULAR" (default),"SILENT_PUSH"
-// only supply tags when messagingType == "MESSAGE_TAG" (see https://developers.facebook.com/docs/messenger-platform/send-messages#messaging_types for more)
+// only supply tags when messagingType == "MESSAGE_TAG" (see https://developers.facebook.com/docs/messenger-platform/send-messages#messaging_types for more).
 func (r *Response) TextWithReplies(
 	message string,
 	replies []QuickReply,
@@ -191,7 +191,7 @@ func (r *Response) TextWithReplies(
 	return r.DispatchMessage(&m)
 }
 
-// AttachmentWithReplies sends a attachment message with some replies
+// AttachmentWithReplies sends a attachment message with some replies.
 func (r *Response) AttachmentWithReplies(
 	attachment *StructuredMessageAttachment,
 	replies []QuickReply,

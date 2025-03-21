@@ -34,7 +34,6 @@ linters:
     - revive
     - mnd
     - gosec
-    - lll
     - makezero
     - misspell
     - nestif

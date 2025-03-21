@@ -13,7 +13,7 @@ type Profile struct {
 	// instagram user profile
 	Username  string `json:"username,omitempty"`
 	IsPrivate bool   `json:"is_private,omitempty"`
-	//FollowCount          int32  `json:"follow_count,omitempty"`
+	// FollowCount          int32  `json:"follow_count,omitempty"`
 	FollowedByCount      int32 `json:"follower_count,omitempty"` // by the documentation followed_by_count
 	IsVerifiedUser       bool  `json:"is_verified_user"`
 	IsUserFollowBusiness bool  `json:"is_user_follow_business"`
