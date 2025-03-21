@@ -19,12 +19,14 @@ import (
 // AttachmentType is attachment type.
 type AttachmentType string
 type MessagingType string
+type NotificationType string
 type TopElementStyle string
 type ImageAspectRatio string
+type TagType string
 
 const (
 	// DefaultSendAPIVersion is a default Send API version
-	DefaultSendAPIVersion = "v2.11"
+	DefaultSendAPIVersion = "v11.0"
 	// SendMessageURL is API endpoint for sending messages.
 	SendMessageURL = "https://graph.facebook.com/%s/me/messages"
 	// ThreadControlURL is the API endpoint for passing thread control.
@@ -50,6 +52,13 @@ const (
 	// NonPromotionalSubscriptionType is NON_PROMOTIONAL_SUBSCRIPTION messaging type.
 	NonPromotionalSubscriptionType MessagingType = "NON_PROMOTIONAL_SUBSCRIPTION"
 
+	// NotificationNoPushType is NO_PUSH notification type. No notification.
+	NotificationNoPushType NotificationType = "NO_PUSH"
+	// NotificationRegularType is REGULAR notification type (default). Sound or vibration when a message is received by a person.
+	NotificationRegularType NotificationType = "REGULAR"
+	// NotificationSilentPushType is SILENT_PUSH notification type. On-screen notification only.
+	NotificationSilentPushType NotificationType = "SILENT_PUSH"
+
 	// TopElementStyle is compact.
 	CompactTopElementStyle TopElementStyle = "compact"
 	// TopElementStyle is large.
@@ -59,6 +68,21 @@ const (
 	HorizontalImageAspectRatio ImageAspectRatio = "horizontal"
 	// ImageAspectRatio is square.
 	SquareImageAspectRatio ImageAspectRatio = "square"
+
+	SenderActionMarkSeen  SenderAction = "mark_seen"
+	SenderActionTypingOn  SenderAction = "typing_on"
+	SenderActionTypingOff SenderAction = "typing_off"
+
+	// TagAccountUpdateType Tags the message you are sending to your customer as a non-recurring update to their application or account. Not available for Instagram Messaging API.
+	TagAccountUpdateType TagType = "ACCOUNT_UPDATE"
+	// TagConfirmedEventUpdateType Tags the message you are sending to your customer as a reminder fo an upcoming event or an update for an event in procgres for which the customer is registered. Not available for Instagram Messaging API.
+	TagConfirmedEventUpdateType TagType = "CONFIRMED_EVENT_UPDATE"
+	// TagCustomerFeedbackType Tags the message you are sending to your customer as a Customer Feedback Survey. Customer feedback messages must be sent within 7 days of the customer's last message. Not available for Instagram Messaging API.
+	TagCustomerFeedbackType TagType = "CUSTOMER_FEEDBACK"
+	// TagHumanAgentType When this tag is added to a message to a customer, it allows a human agent to respond to a person's message. Messages can be sent within 7 days of the person's. Human agent support is for issues that cannot be resolved within the standard 24 hour messaging window.
+	TagHumanAgentType TagType = "HUMAN_AGENT"
+	// TagPostPurchaseUpdateType Tags the message you are sending to your customer as an update for a recent purchase made by the customer. Not available for Instagram Messaging API.
+	TagPostPurchaseUpdateType TagType = "POST_PURCHASE_UPDATE"
 )
 
 // QueryResponse is the response sent back by Facebook when setting up things
@@ -123,17 +147,31 @@ func (r *Response) SetToken(token string) {
 	r.token = token
 }
 
-// Text sends a textual message.
-func (r *Response) Text(message string, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
-	return r.TextWithReplies(message, nil, messagingType, metadata, tags...)
+func (r *Response) Text(
+	message string,
+	messagingType MessagingType,
+	metadata string,
+	notificationType NotificationType,
+	tags ...TagType,
+) (QueryResponse, error) {
+	return r.TextWithReplies(message, nil, messagingType, metadata, notificationType, tags...)
 }
 
 // TextWithReplies sends a textual message with some replies
 // messagingType should be one of the following: "RESPONSE","UPDATE","MESSAGE_TAG","NON_PROMOTIONAL_SUBSCRIPTION"
 // only supply tags when messagingType == "MESSAGE_TAG"
 // (see https://developers.facebook.com/docs/messenger-platform/send-messages#messaging_types for more).
-func (r *Response) TextWithReplies(message string, replies []QuickReply, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
-	var tag string
+// notificationType should be one of the following: "NO_PUSH","REGULAR" (default),"SILENT_PUSH"
+// only supply tags when messagingType == "MESSAGE_TAG" (see https://developers.facebook.com/docs/messenger-platform/send-messages#messaging_types for more).
+func (r *Response) TextWithReplies(
+	message string,
+	replies []QuickReply,
+	messagingType MessagingType,
+	metadata string,
+	notificationType NotificationType,
+	tags ...TagType,
+) (QueryResponse, error) {
+	var tag TagType
 	if len(tags) > 0 {
 		tag = tags[0]
 	}
@@ -147,14 +185,22 @@ func (r *Response) TextWithReplies(message string, replies []QuickReply, messagi
 			QuickReplies: replies,
 			Metadata:     metadata,
 		},
-		Tag: tag,
+		Tag:              tag,
+		NotificationType: notificationType,
 	}
 	return r.DispatchMessage(&m)
 }
 
 // AttachmentWithReplies sends a attachment message with some replies.
-func (r *Response) AttachmentWithReplies(attachment *StructuredMessageAttachment, replies []QuickReply, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
-	var tag string
+func (r *Response) AttachmentWithReplies(
+	attachment *StructuredMessageAttachment,
+	replies []QuickReply,
+	messagingType MessagingType,
+	metadata string,
+	notificationType NotificationType,
+	tags ...TagType,
+) (QueryResponse, error) {
+	var tag TagType
 	if len(tags) > 0 {
 		tag = tags[0]
 	}
@@ -167,7 +213,8 @@ func (r *Response) AttachmentWithReplies(attachment *StructuredMessageAttachment
 			QuickReplies: replies,
 			Metadata:     metadata,
 		},
-		Tag: tag,
+		Tag:              tag,
+		NotificationType: notificationType,
 	}
 	return r.DispatchMessage(&m)
 }
@@ -434,10 +481,11 @@ func (r *Response) PassThreadToInbox() error {
 
 // SendMessage is the information sent in an API request to Facebook.
 type SendMessage struct {
-	MessagingType MessagingType `json:"messaging_type"`
-	Recipient     Recipient     `json:"recipient"`
-	Message       MessageData   `json:"message"`
-	Tag           string        `json:"tag,omitempty"`
+	MessagingType    MessagingType    `json:"messaging_type"`
+	Recipient        Recipient        `json:"recipient"`
+	Message          MessageData      `json:"message"`
+	Tag              TagType          `json:"tag,omitempty"`
+	NotificationType NotificationType `json:"notification_type,omitempty"`
 }
 
 // MessageData is a message consisting of text or an attachment, with an additional selection of optional quick replies.

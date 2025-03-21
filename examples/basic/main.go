@@ -48,7 +48,8 @@ func main() {
 			fmt.Println("Something went wrong!", err)
 		}
 
-		r.Text(fmt.Sprintf("Hello, %v!", p.FirstName), messenger.ResponseType, "")
+		r.Text(fmt.Sprintf("Hello, %v!", p.FirstName),
+			messenger.ResponseType, "", messenger.NotificationRegularType)
 	})
 
 	// Setup a handler to be triggered when a message is delivered
