@@ -84,7 +84,8 @@ func main() {
 			text = "You've been logged out of your account."
 		}
 
-		if _, err := r.Text(text, messenger.ResponseType, ""); err != nil {
+		if _, err := r.Text(text, messenger.ResponseType,
+			"", messenger.NotificationRegularType); err != nil {
 			log.Println("Failed to send account linking feedback")
 		}
 	})
@@ -134,7 +135,8 @@ func logoutButton(r *messenger.Response) error {
 
 // greeting salutes the user.
 func greeting(p messenger.Profile, r *messenger.Response) error {
-	_, err := r.Text(fmt.Sprintf("Hello, %v!", p.FirstName), messenger.ResponseType, "")
+	_, err := r.Text(fmt.Sprintf("Hello, %v!", p.FirstName), messenger.ResponseType,
+		"", messenger.NotificationRegularType)
 	return err
 }
 
@@ -156,7 +158,7 @@ func help(p messenger.Profile, r *messenger.Response) error {
 		},
 	}
 
-	_, err := r.TextWithReplies(text, replies, messenger.ResponseType, "")
+	_, err := r.TextWithReplies(text, replies, messenger.ResponseType, "", messenger.NotificationRegularType)
 	return err
 }
 
