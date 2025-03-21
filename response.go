@@ -360,6 +360,21 @@ func (r *Response) SenderAction(action SenderAction) (QueryResponse, error) {
 	return r.DispatchMessage(&m)
 }
 
+// InstagramReaction sends an info about Instagram reaction.
+func (r *Response) InstagramReaction(mid string, action ReactionAction, reaction ...string) (QueryResponse, error) {
+	m := SendInstagramReaction{
+		Recipient:    r.to,
+		SenderAction: action,
+		Payload: SenderInstagramReactionPayload{
+			MessageID: mid,
+		},
+	}
+	if len(reaction) > 0 {
+		m.Payload.Reaction = reaction[0]
+	}
+	return r.DispatchMessage(&m)
+}
+
 // DispatchMessage posts the message to messenger, return the error if there's any.
 func (r *Response) DispatchMessage(m interface{}) (QueryResponse, error) {
 	var res QueryResponse
@@ -548,4 +563,27 @@ type StructuredMessageButton struct {
 type SendSenderAction struct {
 	Recipient    Recipient    `json:"recipient"`
 	SenderAction SenderAction `json:"sender_action"`
+}
+
+// ReactionAction contains info about reaction action type.
+type ReactionAction string
+
+const (
+	// ReactionActionReact is used when user added a reaction.
+	ReactionActionReact ReactionAction = "react"
+	// ReactionActionUnReact is used when user removed a reaction.
+	ReactionActionUnReact ReactionAction = "unreact"
+)
+
+// SendInstagramReaction is the information about sender action.
+type SendInstagramReaction struct {
+	Recipient    Recipient                      `json:"recipient"`
+	SenderAction ReactionAction                 `json:"sender_action"`
+	Payload      SenderInstagramReactionPayload `json:"payload"`
+}
+
+// SenderInstagramReactionPayload contains target message ID and reaction name.
+type SenderInstagramReactionPayload struct {
+	MessageID string `json:"message_id"`
+	Reaction  string `json:"reaction"`
 }

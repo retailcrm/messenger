@@ -81,7 +81,7 @@ type IGMessageReaction struct {
 	// Mid is a message ID.
 	Mid string `json:"mid"`
 	// Action can be {react|unreact}
-	Action string `json:"action"`
+	Action ReactionAction `json:"action"`
 	// Reaction is a reaction name. Optional.
 	Reaction string `json:"reaction,omitempty"`
 	// Emoji is optional.

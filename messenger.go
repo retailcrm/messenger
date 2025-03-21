@@ -517,6 +517,20 @@ func (m *Messenger) SenderAction(to Recipient, action SenderAction) (QueryRespon
 	return response.SenderAction(action)
 }
 
+func (m *Messenger) InstagramReaction(
+	to Recipient,
+	mid string,
+	action ReactionAction,
+	reaction ...string,
+) (QueryResponse, error) {
+	response := &Response{
+		token:          m.token,
+		to:             to,
+		sendAPIVersion: m.sendAPIVersion,
+	}
+	return response.InstagramReaction(mid, action, reaction...)
+}
+
 // classify determines what type of message a webhook event is.
 func (m *Messenger) classify(info MessageInfo) Action {
 	if info.Message != nil {
