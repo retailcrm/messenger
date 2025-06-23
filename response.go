@@ -124,15 +124,28 @@ func (r *Response) SetToken(token string) {
 }
 
 // Text sends a textual message.
-func (r *Response) Text(message string, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
-	return r.TextWithReplies(message, nil, messagingType, metadata, tags...)
+func (r *Response) Text(
+	message string,
+	messagingType MessagingType,
+	control *ThreadControl,
+	metadata string,
+	tags ...string,
+) (QueryResponse, error) {
+	return r.TextWithReplies(message, nil, messagingType, control, metadata, tags...)
 }
 
 // TextWithReplies sends a textual message with some replies
 // messagingType should be one of the following: "RESPONSE","UPDATE","MESSAGE_TAG","NON_PROMOTIONAL_SUBSCRIPTION"
 // only supply tags when messagingType == "MESSAGE_TAG"
 // (see https://developers.facebook.com/docs/messenger-platform/send-messages#messaging_types for more).
-func (r *Response) TextWithReplies(message string, replies []QuickReply, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
+func (r *Response) TextWithReplies(
+	message string,
+	replies []QuickReply,
+	messagingType MessagingType,
+	threadControl *ThreadControl,
+	metadata string,
+	tags ...string,
+) (QueryResponse, error) {
 	var tag string
 	if len(tags) > 0 {
 		tag = tags[0]
@@ -141,6 +154,7 @@ func (r *Response) TextWithReplies(message string, replies []QuickReply, messagi
 	m := SendMessage{
 		MessagingType: messagingType,
 		Recipient:     r.to,
+		ThreadControl: threadControl,
 		Message: MessageData{
 			Text:         message,
 			Attachment:   nil,
@@ -153,7 +167,14 @@ func (r *Response) TextWithReplies(message string, replies []QuickReply, messagi
 }
 
 // AttachmentWithReplies sends a attachment message with some replies.
-func (r *Response) AttachmentWithReplies(attachment *StructuredMessageAttachment, replies []QuickReply, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
+func (r *Response) AttachmentWithReplies(
+	attachment *StructuredMessageAttachment,
+	replies []QuickReply,
+	messagingType MessagingType,
+	control *ThreadControl,
+	metadata string,
+	tags ...string,
+) (QueryResponse, error) {
 	var tag string
 	if len(tags) > 0 {
 		tag = tags[0]
@@ -162,6 +183,7 @@ func (r *Response) AttachmentWithReplies(attachment *StructuredMessageAttachment
 	m := SendMessage{
 		MessagingType: messagingType,
 		Recipient:     r.to,
+		ThreadControl: control,
 		Message: MessageData{
 			Attachment:   attachment,
 			QuickReplies: replies,
@@ -434,10 +456,11 @@ func (r *Response) PassThreadToInbox() error {
 
 // SendMessage is the information sent in an API request to Facebook.
 type SendMessage struct {
-	MessagingType MessagingType `json:"messaging_type"`
-	Recipient     Recipient     `json:"recipient"`
-	Message       MessageData   `json:"message"`
-	Tag           string        `json:"tag,omitempty"`
+	MessagingType MessagingType  `json:"messaging_type"`
+	Recipient     Recipient      `json:"recipient"`
+	Message       MessageData    `json:"message"`
+	Tag           string         `json:"tag,omitempty"`
+	ThreadControl *ThreadControl `json:"thread_control,omitempty"`
 }
 
 // MessageData is a message consisting of text or an attachment, with an additional selection of optional quick replies.
