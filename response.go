@@ -208,7 +208,14 @@ func (r *Response) Image(im image.Image) (QueryResponse, error) {
 }
 
 // Attachment sends an image, sound, video or a regular file to a chat.
-func (r *Response) Attachment(dataType AttachmentType, url string, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
+func (r *Response) Attachment(
+	dataType AttachmentType,
+	url string,
+	messagingType MessagingType,
+	control *ThreadControl,
+	metadata string,
+	tags ...string,
+) (QueryResponse, error) {
 	var tag string
 	if len(tags) > 0 {
 		tag = tags[0]
@@ -216,6 +223,7 @@ func (r *Response) Attachment(dataType AttachmentType, url string, messagingType
 
 	m := SendStructuredMessage{
 		MessagingType: messagingType,
+		ThreadControl: control,
 		Recipient:     r.to,
 		Message: StructuredMessageData{
 			Metadata: metadata,
@@ -322,7 +330,13 @@ func (r *Response) ButtonTemplate(text string, buttons *[]StructuredMessageButto
 }
 
 // GenericTemplate is a message which allows for structural elements to be sent.
-func (r *Response) GenericTemplate(elements *[]StructuredMessageElement, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
+func (r *Response) GenericTemplate(
+	elements *[]StructuredMessageElement,
+	messagingType MessagingType,
+	control *ThreadControl,
+	metadata string,
+	tags ...string,
+) (QueryResponse, error) {
 	var tag string
 	if len(tags) > 0 {
 		tag = tags[0]
@@ -331,6 +345,7 @@ func (r *Response) GenericTemplate(elements *[]StructuredMessageElement, messagi
 	m := SendStructuredMessage{
 		MessagingType: messagingType,
 		Recipient:     r.to,
+		ThreadControl: control,
 		Message: StructuredMessageData{
 			Metadata: metadata,
 			Attachment: StructuredMessageAttachment{
@@ -477,6 +492,7 @@ type SendStructuredMessage struct {
 	Recipient     Recipient             `json:"recipient"`
 	Message       StructuredMessageData `json:"message"`
 	Tag           string                `json:"tag,omitempty"`
+	ThreadControl *ThreadControl        `json:"thread_control,omitempty"`
 }
 
 // StructuredMessageData is an attachment sent with a structured message.
