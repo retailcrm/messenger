@@ -455,13 +455,20 @@ func (m *Messenger) Send(
 }
 
 // SendGeneralMessage will send the GenericTemplate message.
-func (m *Messenger) SendGeneralMessage(to Recipient, elements *[]StructuredMessageElement, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
+func (m *Messenger) SendGeneralMessage(
+	to Recipient,
+	elements *[]StructuredMessageElement,
+	messagingType MessagingType,
+	control *ThreadControl,
+	metadata string,
+	tags ...string,
+) (QueryResponse, error) {
 	r := &Response{
 		token:          m.token,
 		to:             to,
 		sendAPIVersion: m.sendAPIVersion,
 	}
-	return r.GenericTemplate(elements, messagingType, metadata, tags...)
+	return r.GenericTemplate(elements, messagingType, control, metadata, tags...)
 }
 
 // SendWithReplies sends a textual message to a user, but gives them the option of numerous quick response options.
@@ -484,14 +491,22 @@ func (m *Messenger) SendWithReplies(
 }
 
 // Attachment sends an image, sound, video or a regular file to a given recipient.
-func (m *Messenger) Attachment(to Recipient, dataType AttachmentType, url string, messagingType MessagingType, metadata string, tags ...string) (QueryResponse, error) {
+func (m *Messenger) Attachment(
+	to Recipient,
+	dataType AttachmentType,
+	url string,
+	messagingType MessagingType,
+	control *ThreadControl,
+	metadata string,
+	tags ...string,
+) (QueryResponse, error) {
 	response := &Response{
 		token:          m.token,
 		to:             to,
 		sendAPIVersion: m.sendAPIVersion,
 	}
 
-	return response.Attachment(dataType, url, messagingType, metadata, tags...)
+	return response.Attachment(dataType, url, messagingType, control, metadata, tags...)
 }
 
 // EnableChatExtension set the homepage url required for a chat extension.
