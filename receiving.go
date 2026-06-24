@@ -139,9 +139,11 @@ type Payload struct {
 	URL   string `json:"url,omitempty"`
 	Title string `json:"title,omitempty"`
 	// Coordinates is Lat/Long pair of location pin
-	Coordinates  *Coordinates `json:"coordinates,omitempty"`
-	TemplateType string       `json:"template_type,omitempty"`
-	Buttons      []Button     `json:"buttons,omitempty"`
+	Coordinates   *Coordinates `json:"coordinates,omitempty"`
+	TemplateType  string       `json:"template_type,omitempty"`
+	Buttons       []Button     `json:"buttons,omitempty"`
+	StoryMediaID  string       `json:"story_media_id,omitempty"`
+	StoryMediaURL string       `json:"story_media_url,omitempty"`
 }
 
 type Button struct {
