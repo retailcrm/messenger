@@ -205,7 +205,7 @@ func (m *Messenger) ProfileByID(id int64, profileFields []string) (Profile, erro
 		qr := QueryResponse{}
 		err = json.Unmarshal(content, &qr)
 		if qr.Error != nil {
-			err = xerrors.Errorf("facebook error: %w", qr.Error)
+			err = qr.Error
 		}
 	}
 

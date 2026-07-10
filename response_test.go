@@ -85,3 +85,30 @@ func TestTextWithReplies(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, "ABCD", resp.MessageID)
 }
+
+func TestResponse_QueryErrorIncludesMetaDetails(t *testing.T) {
+	payload := []byte(`{"error":{"message":"Invalid message id","type":"OAuthException","code":508,"error_subcode":2534122,"is_transient":true,"error_user_title":"Link can not be shared","error_user_msg":"Links are temporarily unavailable.","fbtrace_id":"AfOE02v7uihMYGnDnZygt0Q"}}`)
+
+	response, err := getFacebookQueryResponse(bytes.NewReader(payload))
+	require.Error(t, err)
+	queryError, ok := err.(*QueryError)
+	require.True(t, ok)
+	require.True(t, response.Error == queryError)
+	assert.Equal(t, "Invalid message id", queryError.Message)
+	assert.Equal(t, "OAuthException", queryError.Type)
+	assert.Equal(t, 508, queryError.Code)
+	assert.Equal(t, 2534122, queryError.ErrorSubcode)
+	assert.True(t, queryError.IsTransient)
+	assert.Equal(t, "Link can not be shared", queryError.ErrorUserTitle)
+	assert.Equal(t, "Links are temporarily unavailable.", queryError.ErrorUserMsg)
+	assert.Equal(t, "AfOE02v7uihMYGnDnZygt0Q", queryError.FBTraceID)
+}
+
+func TestResponse_checkFacebookError_ReturnsQueryError(t *testing.T) {
+	err := checkFacebookError(bytes.NewReader([]byte(`{"error":{"message":"Invalid message id","code":508}}`)))
+
+	queryError, ok := err.(*QueryError)
+	require.True(t, ok)
+	assert.Equal(t, "Invalid message id", queryError.Message)
+	assert.Equal(t, 508, queryError.Code)
+}

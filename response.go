@@ -12,8 +12,6 @@ import (
 	"net/http"
 	"net/textproto"
 	"strings"
-
-	"golang.org/x/xerrors"
 )
 
 // AttachmentType is attachment type.
@@ -71,11 +69,14 @@ type QueryResponse struct {
 
 // QueryError is representing an error sent back by Facebook.
 type QueryError struct {
-	Message      string `json:"message"`
-	Type         string `json:"type"`
-	Code         int    `json:"code"`
-	ErrorSubcode int    `json:"error_subcode"`
-	FBTraceID    string `json:"fbtrace_id"`
+	Message        string `json:"message"`
+	Type           string `json:"type"`
+	Code           int    `json:"code"`
+	ErrorSubcode   int    `json:"error_subcode"`
+	IsTransient    bool   `json:"is_transient"`
+	ErrorUserTitle string `json:"error_user_title"`
+	ErrorUserMsg   string `json:"error_user_msg"`
+	FBTraceID      string `json:"fbtrace_id"`
 }
 
 // QueryError implements error.
@@ -93,7 +94,7 @@ func checkFacebookError(r io.Reader) error {
 		return NewUnmarshalError(err).WithReader(decoder.Buffered())
 	}
 	if qr.Error != nil {
-		return xerrors.Errorf("facebook error: %w", qr.Error)
+		return qr.Error
 	}
 
 	return nil
@@ -106,7 +107,7 @@ func getFacebookQueryResponse(r io.Reader) (QueryResponse, error) {
 		return qr, NewUnmarshalError(err).WithReader(decoder.Buffered())
 	}
 	if qr.Error != nil {
-		return qr, xerrors.Errorf("facebook error: %w", qr.Error)
+		return qr, qr.Error
 	}
 	return qr, nil
 }
