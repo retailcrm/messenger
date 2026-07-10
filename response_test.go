@@ -87,6 +87,8 @@ func TestTextWithReplies(t *testing.T) {
 }
 
 func TestResponse_QueryErrorIncludesMetaDetails(t *testing.T) {
+	t.Parallel()
+
 	payload := []byte(`{"error":{"message":"Invalid message id","type":"OAuthException","code":508,"error_subcode":2534122,"is_transient":true,"error_user_title":"Link can not be shared","error_user_msg":"Links are temporarily unavailable.","fbtrace_id":"AfOE02v7uihMYGnDnZygt0Q"}}`)
 
 	response, err := getFacebookQueryResponse(bytes.NewReader(payload))
@@ -105,6 +107,8 @@ func TestResponse_QueryErrorIncludesMetaDetails(t *testing.T) {
 }
 
 func TestResponse_checkFacebookError_ReturnsQueryError(t *testing.T) {
+	t.Parallel()
+
 	err := checkFacebookError(bytes.NewReader([]byte(`{"error":{"message":"Invalid message id","code":508}}`)))
 
 	queryError, ok := err.(*QueryError)
