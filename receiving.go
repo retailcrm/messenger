@@ -139,16 +139,31 @@ type Payload struct {
 	URL   string `json:"url,omitempty"`
 	Title string `json:"title,omitempty"`
 	// Coordinates is Lat/Long pair of location pin
-	Coordinates   *Coordinates `json:"coordinates,omitempty"`
-	TemplateType  string       `json:"template_type,omitempty"`
-	Buttons       []Button     `json:"buttons,omitempty"`
-	StoryMediaID  string       `json:"story_media_id,omitempty"`
-	StoryMediaURL string       `json:"story_media_url,omitempty"`
+	Coordinates   *Coordinates     `json:"coordinates,omitempty"`
+	TemplateType  string           `json:"template_type,omitempty"`
+	Buttons       []Button         `json:"buttons,omitempty"`
+	Generic       *GenericTemplate `json:"generic,omitempty"`
+	StoryMediaID  string           `json:"story_media_id,omitempty"`
+	StoryMediaURL string           `json:"story_media_url,omitempty"`
+}
+
+// GenericTemplate contains cards received in a template attachment.
+type GenericTemplate struct {
+	Elements []GenericTemplateElement `json:"elements,omitempty"`
+}
+
+// GenericTemplateElement is a card in an incoming generic template.
+type GenericTemplateElement struct {
+	Title    string   `json:"title,omitempty"`
+	Subtitle string   `json:"subtitle,omitempty"`
+	ImageURL string   `json:"image_url,omitempty"`
+	Buttons  []Button `json:"buttons,omitempty"`
 }
 
 type Button struct {
 	Type                string `json:"type,omitempty"`
 	Title               string `json:"title,omitempty"`
+	Subtitle            string `json:"subtitle,omitempty"`
 	Payload             string `json:"payload,omitempty"`
 	URL                 string `json:"url,omitempty"`
 	WebviewHeightRatio  string `json:"webview_height_ratio,omitempty"`
